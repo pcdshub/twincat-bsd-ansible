@@ -1,0 +1,10 @@
+{%- macro ip_to_ams_net_id(hostname) -%}
+{%- set ipaddr = lookup('dig', hostname) -%}
+{{ ipaddr }}.1.1
+{%- endmacro -%}
+
+{%- macro ams_net_id_to_binary(ams_net_id) -%}
+{%- for part in ams_net_id | split(".") -%}
+  {{ "%02X" | format(part | int) }}
+{%- endfor -%}
+{%- endmacro -%}

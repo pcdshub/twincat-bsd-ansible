@@ -1,0 +1,5 @@
+anchor ads
+
+# Enable inbound traffic on the insecure ADS port:
+pass in quick proto tcp to port 48898
+# Note that all outbound traffic is already enabled
