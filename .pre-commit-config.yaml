@@ -15,3 +15,16 @@ repos:
     -   id: check-xml
     -   id: check-yaml
     -   id: debug-statements
+
+-   repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.8.0
+    hooks:
+    - id: shellcheck
+      types: []  # Skips non-.sh files without this
+      files: |
+        (?x)^(
+            templates/home/Administrator/\.bashrc|
+            templates/home/Administrator/\.bash_profile|
+            .*\.sh$
+        )$
+#     args: ["--severity=warning"]  # Optionally only show errors and warnings
