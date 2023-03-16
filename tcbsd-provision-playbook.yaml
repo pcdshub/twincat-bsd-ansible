@@ -5,11 +5,6 @@
     - name: Verify connectivity with ping
       ping:
 
-    - name: Bootstrap dependencies for ansible
-      ansible.builtin.raw: test -e /usr/local/bin/python3 || pkg install -y python39
-      register: bootstrap
-      changed_when: "'Installing' in bootstrap.stdout"
-
     - name: Install helpful system packages
       ansible.builtin.package:
         name:

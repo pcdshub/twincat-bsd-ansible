@@ -1,14 +1,14 @@
 plcs:
   hosts:
-    192.168.2.232:
-      tc_ams_net_id: 192.168.2.232.1.1
+    ${PLC_HOSTNAME}:
+      tc_ams_net_id: ${PLC_NET_ID}
   vars:
     ansible_user: Administrator
-    ansible_ssh_private_key_file: ./tcbsd_key_rsa
+    ansible_ssh_private_key_file: ${SSH_KEY_FILENAME}
     ansible_become: true
     ansible_become_method: doas
     ansible_become_password: 1  # TODO: vault
-    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_python_interpreter: /usr/local/bin/python3.9
     tc_locked_memory_size: 33554432
     tc_use_bash: true
     tc_packages_to_install:
@@ -19,4 +19,4 @@ plcs:
   children:
     minimal:
       hosts:
-        192.168.2.232:
+        ${PLC_HOSTNAME}:
