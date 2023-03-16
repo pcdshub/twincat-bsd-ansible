@@ -21,6 +21,13 @@ plcs:
       - git
       - vim
       - ripgrep
+    # Configure the following static routes (and only those):
+    tc_set_static_routes: true
+    tc_routes:
+      - name: ansible-pc
+        address: ${OUR_IP_ADDRESS}
+        net_id: ${OUR_NET_ID}
+        type: TCP_IP
 
   children:
     minimal:

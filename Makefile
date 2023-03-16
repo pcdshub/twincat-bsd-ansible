@@ -15,6 +15,8 @@ export PLC_HOSTNAME
 export PLC_IP
 export PLC_NET_ID
 export PLC_USERNAME
+export OUR_IP_ADDRESS
+export OUR_NET_ID
 export SSH_KEY_FILENAME
 
 ifndef PLC_IP

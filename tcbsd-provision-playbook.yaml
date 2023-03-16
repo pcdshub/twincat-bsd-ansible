@@ -10,6 +10,7 @@
         name:
           - bash
           - bash-completion
+          - htop
           - py39-lxml
           - python39  # beyond bootstrapping, this is here to keep it up-to-date
           - rsync
@@ -152,6 +153,20 @@
         enabled: yes
         state: reloaded
       when: siteconf.changed or pf.changed
+
+    # TODO: ideally we'd use the xml tool to write these out so we don't have
+    # to overwrite the file
+    - name: Configure the static routes
+      ansible.builtin.template:
+        src: "./templates/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        dest: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+        backup: yes
+      tags:
+        - routes
+      when: tc_set_static_routes
 
     - name: Restart the TwinCAT service
       ansible.builtin.service:

@@ -3,3 +3,5 @@
 *.pub
 # Only include the template:
 /host_inventory.yaml
+TCBSD*.vdi
+TCBSD*.iso
