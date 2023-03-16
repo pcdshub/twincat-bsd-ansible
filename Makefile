@@ -10,6 +10,7 @@ SSH_KEY_FILENAME ?= $(shell pwd)/tcbsd_key_rsa
 # after ?= with your IP.
 OUR_IP_ADDRESS   ?= $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1)
 OUR_NET_ID       ?= $(OUR_IP_ADDRESS).1.1
+OUR_ROUTE_NAME   ?= $(shell hostname -s)
 
 export PLC_HOSTNAME
 export PLC_IP
@@ -17,6 +18,7 @@ export PLC_NET_ID
 export PLC_USERNAME
 export OUR_IP_ADDRESS
 export OUR_NET_ID
+export OUR_ROUTE_NAME
 export SSH_KEY_FILENAME
 
 ifndef PLC_IP
@@ -59,7 +61,7 @@ add-route:
 		echo "PLC information:"; \
 		ads-async info "$(PLC_IP)"; \
 		ADS_ASYNC_LOCAL_IP="$(OUR_IP_ADDRESS)" ADS_ASYNC_LOCAL_NET_ID="$(OUR_NET_ID)" \
-				ads-async get --add-route "$(PLC_IP)" MAIN.bValue; \
+				ads-async route --route-name "$(OUR_ROUTE_NAME)" "$(PLC_IP)" "$(OUR_NET_ID)" "$(OUR_IP_ADDRESS)"; \
 	else \
 		echo "No ads tools found to get PLC info / add route"; \
 	fi
