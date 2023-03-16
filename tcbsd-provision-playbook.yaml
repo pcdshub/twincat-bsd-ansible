@@ -39,6 +39,15 @@
           # - TcUsb                                    # TwinCAT USB driver
         state: latest
 
+    - name: Install C/C++ development tools
+      ansible.builtin.package:
+        name:
+          - os-generic-userland-devtools
+          - llvm
+          - gdb
+        state: latest
+      when: tc_install_cpp_dev_tools
+
     - name: Install required TwinCAT Libraries
       ansible.builtin.package:
         name:
@@ -110,21 +119,16 @@
       when: tc_use_bash
       changed_when: false
 
-    - name: Include our bashrc
+    - name: "Include our bash config: {{ item }}"
       ansible.builtin.template:
-        src: ./templates/home/Administrator/.bashrc
-        dest: /home/Administrator/.bashrc
+        src: "./templates/{{ item }}"
+        dest: "/{{ item }}"
         owner: Administrator
         mode: u=rw,g=r,o=
       when: tc_use_bash
-
-    - name: Include our bash_profile
-      ansible.builtin.template:
-        src: ./templates/home/Administrator/.bash_profile
-        dest: /home/Administrator/.bash_profile
-        owner: Administrator
-        mode: u=rw,g=r,o=
-      when: tc_use_bash
+      loop:
+        - home/Administrator/.bashrc
+        - home/Administrator/.bash_profile
 
     - name: Include our firewall configuration
       ansible.builtin.template:

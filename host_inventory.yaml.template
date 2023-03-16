@@ -10,8 +10,13 @@ plcs:
     ansible_become_method: doas
     ansible_become_password: 1  # TODO: vault
     ansible_python_interpreter: /usr/local/bin/python3.9
+    # This is the default of 32MB. Set to 67108864 for 64MB of router memory.
     tc_locked_memory_size: 33554432
+    # Install and use bash in place of sh:
     tc_use_bash: true
+    # Install C/C++ development tools:
+    tc_install_cpp_dev_tools: false
+    # Install these additional packages:
     tc_packages_to_install:
       - git
       - vim

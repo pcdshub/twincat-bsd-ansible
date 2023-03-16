@@ -44,7 +44,9 @@
 5. Open "tcbsd-a.vbox" in VirtualBox. Start it and run the installation.
     a. Select "Install"
     b. OK the overwrite of the disk.
-    c. Set "1" as the password for Administrator and confirm it.
+    c. Set "1" as the password for Administrator and confirm it. (or better
+        yet, set it according to good password standards and change `1` in the
+        configuration files)
     d. Reboot
 6. Check the VM IP address (log in and run ``ifconfig``)
     a. Or see [here](https://infosys.beckhoff.com/english.php?content=../content/1033/twincat_bsd/5620035467.html&id=)
