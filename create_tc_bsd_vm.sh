@@ -97,8 +97,8 @@ vbox_manage storagectl "$VM_NAME" --name SATA --add sata --controller IntelAhci 
 echo "* Attaching to installation HDD to SATA Port 1"
 vbox_manage storageattach "$VM_NAME" --storagectl "SATA" --device 0 --port 1 --type hdd --medium "$TCBSD_VDI_IMAGE"
 
-echo "* Creating an empty disk image for the TwinCAT BSD installation"
-vbox_manage createmedium --filename "$VM_HDD" --size 4096 --format VHD 2>&1
+echo "* Creating an empty 8GB disk image for the TwinCAT BSD installation"
+vbox_manage createmedium --filename "$VM_HDD" --size 8192 --format VHD 2>&1
 
 echo "* Attaching the empty disk image to SATA Port 0"
 vbox_manage storageattach "$VM_NAME" --storagectl "SATA" --device 0 --port 0 --type hdd --medium "$VM_HDD"
