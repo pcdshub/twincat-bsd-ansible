@@ -96,6 +96,15 @@
         value: "{{ tc_locked_memory_size | string }}"
       register: locked_memory_size
 
+    - name: Set the hostname
+      ansible.builtin.lineinfile:
+        dest: /etc/rc.conf
+        regexp: '^hostname='
+        line: "hostname=\"{{ inventory_hostname }}\""
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
     - name: Change default shell for Administrator
       ansible.builtin.command: chsh -s /usr/local/bin/bash Administrator
       when: tc_use_bash

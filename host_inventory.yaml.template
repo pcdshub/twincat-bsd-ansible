@@ -1,6 +1,7 @@
 plcs:
   hosts:
     ${PLC_HOSTNAME}:
+      ansible_host: ${PLC_IP}
       tc_ams_net_id: ${PLC_NET_ID}
   vars:
     ansible_user: Administrator
