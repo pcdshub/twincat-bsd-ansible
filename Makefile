@@ -17,7 +17,10 @@ ssh-setup:
 		ssh-keygen -t rsa -f "$(SSH_KEY_FILENAME)"; \
 	fi
 	ssh-copy-id -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_HOSTNAME)"
-	ssh -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_HOSTNAME)" 'echo "Successfully logged in with the key to $(PLC_HOSTNAME)"'
+	$(MAKE) ssh SSH_ARGS='echo "Successfully logged in with the key to $(PLC_HOSTNAME)"'
+
+ssh:
+	ssh -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_HOSTNAME)" $(SSH_ARGS)
 
 host_inventory.yaml: Makefile host_inventory.yaml.template
 	envsubst < "host_inventory.yaml.template" > "$@"
@@ -40,4 +43,4 @@ add-route:
 		echo "No ads tools found to get PLC info / add route"; \
 	fi
 
-.PHONY: all ssh-setup run-provision run-bootstrap add-route
+.PHONY: all ssh-setup ssh run-provision run-bootstrap add-route
