@@ -14,8 +14,8 @@ plcs:
     tc_locked_memory_size: 33554432
     # Install and use bash in place of sh:
     tc_use_bash: true
-    # Install C/C++ development tools:
-    tc_install_cpp_dev_tools: false
+    # Install C/C++ development tools (approximately 1.8GB):
+    tc_install_cpp_dev_tools: true
     # Install these additional packages:
     tc_packages_to_install:
       - git
