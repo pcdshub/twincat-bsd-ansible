@@ -22,3 +22,8 @@ repos:
     - id: shellcheck
       types: []  # Skips non-.sh files without this
       files: \.(bashrc|bash_profile|sh)$
+
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: v0.0.255
+  hooks:
+    - id: ruff
