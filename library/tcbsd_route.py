@@ -111,14 +111,31 @@ message:
 
 
 class Route(object):
+    """
+    A single static route in TwinCAT/BSD land.
+
+    Parameters
+    ----------
+    name : str
+        The name of the route.
+    address : str
+        The IPv4 address of the remote.
+    net_id : str
+        The associated AMS Net ID of the host.
+    type : str
+        The type of the route (typically TCP_IP).
+    flags : str
+        Flags for the route (typically 64, whatever that means)
+    """
+
     def __init__(self, name, address, net_id="", type="", flags=""):
         if not net_id:
             net_id = "%s.1.1" % (hostname_to_ip_address(address),)
         self.name = name
         self.address = address
         self.net_id = net_id
-        self.type_ = type or "TCP_IP"
-        self.flags = flags or "64"
+        self.type_ = str(type or "TCP_IP")
+        self.flags = str(flags or "64")
 
     def validate(self):
         assert self.name, "Name not set"
@@ -179,10 +196,35 @@ class Route(object):
 
 
 def hostname_to_ip_address(hostname):
+    """
+    Convert the provided hostname to an IPv4 address.
+
+    Parameters
+    ----------
+    hostname : str
+        The hostname or IP.
+
+    Returns
+    -------
+    str
+        An IP address for the provided host.
+    """
     return socket.gethostbyname(hostname)
 
 
 def load_routes_from_file(filename):
+    """
+    Load static routes from the provided filename.
+
+    Parameters
+    ----------
+    filename : str
+        The XML filename on disk.
+
+    Returns
+    -------
+    list of Route
+    """
     with open(filename, "rb") as fp:
         routes = lxml.etree.fromstring(fp.read())
 
@@ -193,6 +235,18 @@ def load_routes_from_file(filename):
 
 
 def routes_to_xml(routes):
+    """
+    Convert the provided routes to XML elements.
+
+    Parameters
+    ----------
+    routes : list of Route
+        The routes.
+
+    Returns
+    -------
+    lxml.etree.Element
+    """
     tc_config = lxml.etree.Element(
         "TcConfig", nsmap={"xsi": "http://www.w3.org/2001/XMLSchema-instance"}
     )
@@ -205,6 +259,16 @@ def routes_to_xml(routes):
 
 
 def save_routes_to_file(filename, routes):
+    """
+    Save the provided routes to ``filename``.
+
+    Parameters
+    ----------
+    filename : str
+        The destination filename to write to.
+    routes : list of Route
+        Routes to save.
+    """
     tc_config = routes_to_xml(routes)
     # NOTE: TCBSD writes tabs here; so let's conform
     lxml.etree.indent(tc_config, space="\t")
@@ -220,6 +284,20 @@ def save_routes_to_file(filename, routes):
 
 
 def find_matching_routes(routes, route):
+    """
+    Find matching routes in the ``routes`` list.
+
+    Parameters
+    ----------
+    routes : list of Route
+    route : Route
+
+    Yields
+    ------
+    Route
+        Route which matches either the name, Net ID, or IP address of
+        ``route``.
+    """
     for existing in routes:
         if (
             existing.name == route.name
@@ -294,6 +372,17 @@ def remove_route_if_existing(routes, remove_route):
 
 
 def combine_results(dest_results, results):
+    """
+    Combine results from separate runs of ``ensure_route_exists`` or
+    ``remove_route_if_existing``.
+
+    Parameters
+    ----------
+    dest_results : dict
+        The destination dictionary.
+    results : dict
+        The source dictionary to add onto the destination.
+    """
     for key in dest_results:
         if isinstance(dest_results[key], int):
             dest_results[key] += results.get(key, 0)
@@ -303,6 +392,7 @@ def combine_results(dest_results, results):
 
 
 def run_module():
+    """Run the route modifying module."""
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         file=dict(
