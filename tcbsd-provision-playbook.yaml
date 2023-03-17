@@ -103,8 +103,26 @@
       community.general.xml:
         path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
         xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='LockedMemSize']
-        value: "{{ tc_locked_memory_size | string }}"
+        value: "{{ tc_locked_memory_size_bytes | string }}"
       register: locked_memory_size
+
+    - name: Set the heap memory size
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='HeapMemSizeMB']
+        value: "{{ tc_heap_memory_size_mb | string }}"
+      when: tc_heap_memory_size_mb > 0
+      register: heap_memory_size
+
+      # TODO: can this be combined in the step above?
+    # Sets Type="DW" in <Value Name="HeapMemSizeMB" Type="DW">
+    - name: Tweak the heap memory size to add Type attribute
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='HeapMemSizeMB']
+        attribute: Type
+        value: DW
+      when: tc_heap_memory_size_mb > 0
 
     - name: Set the hostname
       ansible.builtin.lineinfile:
@@ -173,4 +191,4 @@
         name: TcSystemService
         enabled: yes
         state: restarted
-      when: ams_net_id.changed or locked_memory_size.changed
+      when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed

@@ -11,7 +11,11 @@ plcs:
     ansible_become_password: 1  # TODO: vault
     ansible_python_interpreter: /usr/local/bin/python3.9
     # This is the default of 32MB. Set to 67108864 for 64MB of router memory.
-    tc_locked_memory_size: 33554432
+    tc_locked_memory_size_bytes: 33554432
+    # Heap memory size is not specified by default. If you wish to change the
+    # default, set this to greater than 0 (e.g., 1024).  This must be
+    # greater than the locked memory size for the router, above.
+    tc_heap_memory_size_mb: 0
     # Install and use bash in place of sh:
     tc_use_bash: true
     # Install C/C++ development tools (approximately 1.8GB):

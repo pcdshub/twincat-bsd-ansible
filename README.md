@@ -22,6 +22,7 @@
 * Lists all of the available libraries I saw in `pkg search`, with easy uncomment-ability
 * Sets an AMS Net ID based on the host inventory
 * Sets locked memory size in the TcRegistry based on the host inventory
+* (Optionally) Sets heap memory size in the TcRegistry based on the host inventory
 * (Optionally) Installs C/C++ development tools
 * (Optionally) Changes the default shell for Administrator to `bash`
 * (Optionally) Configures initial static routes, by default just adding the
