@@ -172,9 +172,7 @@
         state: reloaded
       when: siteconf.changed or pf.changed
 
-    # TODO: ideally we'd use the xml tool to write these out so we don't have
-    # to overwrite the file
-    - name: Configure the static routes
+    - name: Configure a set of fixed static routes with a template
       ansible.builtin.template:
         src: "./templates/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
         dest: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
@@ -184,7 +182,20 @@
         backup: yes
       tags:
         - routes
-      when: tc_set_static_routes
+      when: tc_set_fixed_static_routes
+
+    - name: Add any missing static routes with our tcbsd_route module
+      tcbsd_route:
+        file: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        state: present
+        routes: "{{ tc_routes }}"
+        # owner: root
+        # group: wheel
+        # mode: u=rw,g=r,o=r
+        # backup: yes
+      tags:
+        - routes
+      when: tc_add_missing_static_routes
 
     - name: Restart the TwinCAT service
       ansible.builtin.service:

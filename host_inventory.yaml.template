@@ -26,7 +26,11 @@ plcs:
       - vim
       - ripgrep
     # Configure the following static routes (and only those):
-    tc_set_static_routes: true
+    # NOTE: if you don't want to run my arbitrary module, use this instead
+    # of tc_add_missing_static_routes below
+    tc_set_fixed_static_routes: false
+    # Alternatively, only add missing routes from the list:
+    tc_add_missing_static_routes: true
     tc_routes:
       - name: ansible-pc
         address: ${OUR_IP_ADDRESS}

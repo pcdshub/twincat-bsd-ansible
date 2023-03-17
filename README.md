@@ -27,6 +27,8 @@
 * (Optionally) Changes the default shell for Administrator to `bash`
 * (Optionally) Configures initial static routes, by default just adding the
   machine from which ansible is being run.
+* (Optionally) Configures add or remove a list of static routes with a custom
+  ansible module ``tcbsd_route`` (see ``library/``).
 * Provides a basic bash configuration, which shows the current TC runtime state:
   ```
   [TCBSD: CONFIG] [Administrator@PC-75972A  ~]$
