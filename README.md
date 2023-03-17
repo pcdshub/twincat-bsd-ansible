@@ -16,13 +16,16 @@
 ### Deploy useful settings with ansible
 
 * Bootstraps the PLC by installing Python 3.9 (required for ansible)
-* Installs system packages that I like
+* Installs system packages that I like and find useful to have everywhere
 * Installs system packages specified in the host inventory
 * Installs TwinCAT tools and a couple libraries
 * Lists all of the available libraries I saw in `pkg search`, with easy uncomment-ability
 * Sets an AMS Net ID based on the host inventory
 * Sets locked memory size in the TcRegistry based on the host inventory
+* (Optionally) Installs C/C++ development tools
 * (Optionally) Changes the default shell for Administrator to `bash`
+* (Optionally) Configures initial static routes, by default just adding the
+  machine from which ansible is being run.
 * Provides a basic bash configuration, which shows the current TC runtime state:
   ```
   [TCBSD: CONFIG] [Administrator@PC-75972A  ~]$
@@ -70,3 +73,19 @@ Run:
 2. ``make host_inventory.yaml`` (create host inventory configuration file)
 3. ``make run-bootstrap`` (install Python on the PLC, required for ansible)
 4. ``make run-provision`` (provision the PLC)
+
+
+## Side notes
+
+### ADS
+
+You can download the ADS library source code, which comes with adstool, from
+[here](https://github.com/Beckhoff/ADS/).
+
+#### Trouble building adstool on macOS due to clang and C++14 standards being used?
+
+Try:
+```bash
+$ meson setup build -Dcpp_std=c++14
+$ make
+```
