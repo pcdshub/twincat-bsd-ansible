@@ -59,8 +59,9 @@
 8. Run ``make`` to pre-configure SSH communication with the VM and then the playbook. (*)
     a. Log in to the PLC when asked.  The generated SSH key will be used in the
        remaining steps.
-9. Launch TwinCAT and add a route to your PLC (and/or use adstool/ads-async)
-
+9. Launch TwinCAT XAE and add a route to your PLC (if on Linux/macOS, you can
+    also use adstool/ads-async via ``make add-route`` if the auto-generated
+    ``StaticRoutes.xml`` is insufficient)
 
 (*) The ``make`` steps, if too magical, can be broken down a bit further.
 Run:
