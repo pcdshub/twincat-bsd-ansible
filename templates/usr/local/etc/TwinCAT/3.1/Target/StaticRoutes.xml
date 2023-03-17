@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TcConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <RemoteConnections>
-{% for route in tc_routes %}
+{% for route in tc_set_fixed_static_routes %}
                 <Route>
                         <Name>{{ route.name }}</Name>
                         <Address>{{ route.address }}</Address>

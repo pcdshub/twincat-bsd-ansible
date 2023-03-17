@@ -138,7 +138,7 @@
       when: tc_use_bash
       changed_when: false
 
-    - name: "Include our bash config: {{ item }}"
+    - name: "Include our bash configuration files"
       ansible.builtin.template:
         src: "./templates/{{ item }}"
         dest: "/{{ item }}"
@@ -188,7 +188,7 @@
       tcbsd_route:
         file: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
         state: present
-        routes: "{{ tc_routes }}"
+        routes: "{{ tc_add_missing_static_routes }}"
         # owner: root
         # group: wheel
         # mode: u=rw,g=r,o=r
