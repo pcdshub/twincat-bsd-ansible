@@ -55,28 +55,8 @@ run-provision: run-bootstrap host_inventory.yaml tcbsd-provision-playbook.yaml
 	ansible-playbook tcbsd-provision-playbook.yaml -i host_inventory.yaml
 
 add-route:
-	@echo "Your local IP is set as: $(OUR_IP_ADDRESS)"
-	@echo "(If using the auto-detection from the Makefile, it may be wrong. Sorry! Please set OUR_IP_ADDRESS specifically.)"
-	read -p "Enter password for adding PLC route: " -rs PLC_PASSWORD ; \
-	echo ""; \
-	if command -v adstool &> /dev/null; then \
-		echo "Found adstool, using it..."; \
-		adstool "$(PLC_IP)" --localams="$(OUR_NET_ID)" --log-level=0 addroute \
-			--addr="$(OUR_IP_ADDRESS)" --netid="$(OUR_NET_ID)" \
-			--username="$(PLC_USERNAME)" --password="$${PLC_PASSWORD}" \
-			--routename="$(OUR_ROUTE_NAME)" ; \
-	elif command -v ads-async &> /dev/null; then \
-		echo "Found ads-async, using it..."; \
-		echo "PLC information:"; \
-		ads-async info "$(PLC_IP)"; \
-		ADS_ASYNC_LOCAL_IP="$(OUR_IP_ADDRESS)" ADS_ASYNC_LOCAL_NET_ID="$(OUR_NET_ID)" \
-				ads-async route --route-name "$(OUR_ROUTE_NAME)" \
-					--username "$(PLC_USERNAME)" --password "$${PLC_PASSWORD}" \
-					"$(PLC_IP)" "$(OUR_NET_ID)" "$(OUR_IP_ADDRESS)"; \
-	else \
-		echo "No ads tools found to get PLC info / add route"; \
-	fi
-	@echo "Added a route to the PLC named $(OUR_ROUTE_NAME):"
-	@echo "  $(OUR_IP_ADDRESS) - $(OUR_NET_ID) <-> $(PLC_IP) $(PLC_NET_ID)"
+	# NOTE: the add_route script lazily uses environment variables instead of
+	# command-line arguments.
+	bash add_route.sh
 
 .PHONY: all ssh-setup ssh run-provision run-bootstrap add-route

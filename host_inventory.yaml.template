@@ -1,3 +1,5 @@
+# vi: syntax=yaml
+
 plcs:
   hosts:
     ${PLC_HOSTNAME}:
@@ -9,7 +11,7 @@ plcs:
     ansible_become: true
     ansible_become_method: doas
     ansible_become_password: 1  # TODO: vault
-    ansible_python_interpreter: /usr/local/bin/python3.9
+    ansible_python_interpreter: /usr/local/bin/python3
     # This is the default of 32MB. Set to 67108864 for 64MB of router memory.
     tc_locked_memory_size_bytes: 33554432
     # Heap memory size is not specified by default. If you wish to change the
@@ -32,7 +34,7 @@ plcs:
     # Alternatively, only add missing routes from the list:
     tc_add_missing_static_routes: true
     tc_routes:
-      - name: ansible-pc
+      - name: ${OUR_ROUTE_NAME}
         address: ${OUR_IP_ADDRESS}
         net_id: ${OUR_NET_ID}
         type: TCP_IP

@@ -13,6 +13,16 @@
 1. Download TwinCAT BSD image from Beckhoff
 2. Run ``./create_tc_bsd_vm.sh (plcname) [tcbsd.iso]``
 
+This will generate a VM with:
+
+* 8GB OS primary OS (SATA) disk image
+* 1GB of RAM
+* One network adapter (NAT -> may require reconfiguration)
+* The bootable TwinCAT BSD installation media connected as the second SATA drive
+    * This will boot until the installation is complete. It can be removed
+      after installation is done, but it will not interfere with TC/BSD
+      from booting post-installation even if it remains.
+
 ### Deploy useful settings with ansible
 
 * Bootstraps the PLC by installing Python 3.9 (required for ansible)
@@ -47,15 +57,20 @@
    these scripts.
 3. Pick a name for the VM: let's choose ``"tcbsd-a"``.
 4. Run ``./create_tc_bsd_vm.sh tcbsd-a``
-5. Open "tcbsd-a.vbox" in VirtualBox. Start it and run the installation.
+5. Open ``"tcbsd-a.vbox"`` in VirtualBox. Start it and run the installation.
     a. Select "Install"
     b. OK the overwrite of the disk.
     c. Set "1" as the password for Administrator and confirm it. (or better
         yet, set it according to good password standards and change `1` in the
         configuration files)
     d. Reboot
-6. Check the VM IP address (log in and run ``ifconfig``)
-    a. Or see [here](https://infosys.beckhoff.com/english.php?content=../content/1033/twincat_bsd/5620035467.html&id=)
+6. Update the VM network settings based on where you want to use it and make note
+   of its IP address.
+    a. The default setting is NAT, but you should consider switching it to
+       host-only (or even bridged to allow usage of the VM on your local network;
+       that's up to you).
+    b. See also [here](https://infosys.beckhoff.com/english.php?content=../content/1033/twincat_bsd/5620035467.html&id=)
+    c. Check the VM IP address (log in and run ``ifconfig``)
 7. Edit ``Makefile`` to set appropriate ``PLC_IP`` (192.168.2.232 in our case)
     a. Alternatively, you can just set it in your environment:
     ```
@@ -68,6 +83,8 @@
 9. Launch TwinCAT XAE and add a route to your PLC (if on Linux/macOS, you can
     also use adstool/ads-async via ``make add-route`` if the auto-generated
     ``StaticRoutes.xml`` is insufficient)
+10. You can use the shortcut ``make ssh`` after this point to log into the PLC
+    with the generated key.
 
 (*) The ``make`` steps, if too magical, can be broken down a bit further.
 Run:
