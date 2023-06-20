@@ -1,0 +1,43 @@
+# vi: syntax=yaml
+
+plcs:
+  hosts:
+    ${PLC_HOSTNAME}:
+      ansible_host: ${PLC_IP}
+      tc_ams_net_id: ${PLC_NET_ID}
+  vars:
+    ansible_user: Administrator
+    ansible_ssh_private_key_file: ${SSH_KEY_FILENAME}
+    ansible_become: true
+    ansible_become_method: doas
+    ansible_become_password: 1  # TODO: vault
+    ansible_python_interpreter: /usr/local/bin/python3
+    # This is the default of 32MB. Set to 67108864 for 64MB of router memory.
+    tc_locked_memory_size_bytes: 33554432
+    # Heap memory size is not specified by default. If you wish to change the
+    # default, set this to greater than 0 (e.g., 1024).  This must be
+    # greater than the locked memory size for the router, above.
+    tc_heap_memory_size_mb: 0
+    # Install and use bash in place of sh:
+    tc_use_bash: true
+    # Install C/C++ development tools (approximately 1.8GB):
+    tc_install_cpp_dev_tools: true
+    # Install these additional packages:
+    tc_packages_to_install:
+      - git
+      - vim
+      - ripgrep
+    # Configure the following static routes (and only those):
+    # NOTE: if you don't want to run my arbitrary module, use this instead
+    # of tc_add_missing_static_routes below
+    tc_set_fixed_static_routes: []
+    # Alternatively, only add missing routes from the list:
+    tc_add_missing_static_routes:
+      - name: ${OUR_ROUTE_NAME}
+        address: ${OUR_IP_ADDRESS}
+        net_id: ${OUR_NET_ID}
+
+  children:
+    minimal:
+      hosts:
+        ${PLC_HOSTNAME}:

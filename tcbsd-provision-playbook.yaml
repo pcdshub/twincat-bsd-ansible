@@ -1,0 +1,205 @@
+---
+- hosts: plcs
+
+  tasks:
+    - name: Verify connectivity with ping
+      ping:
+
+    - name: Install helpful system packages
+      ansible.builtin.package:
+        name:
+          - bash
+          - bash-completion
+          - htop
+          - py39-lxml
+          - python39  # beyond bootstrapping, this is here to keep it up-to-date
+          - rsync
+          # - py39-pip  # probably not a good idea
+          # - zsh
+        state: latest
+
+    - name: Install user-specified system packages
+      ansible.builtin.package:
+        name: "{{ tc_packages_to_install }}"
+        state: latest
+
+    - name: Install TwinCAT tools
+      ansible.builtin.package:
+        name:
+          - TcAdsTool                                # TcAdsTool | Use the power of ADS from your command line
+          - TcAmsLogger                              # TwinCAT ADS Monitor - AMS Logger
+          # - TcBackup                                 # Tools to easily create and restore full system backups
+          # - TcBackup-Gui-Installer                   # Tools to easily create and restore full system backups
+          # - TcCoreConf                               # TwinCAT CPU core configuration tool
+          # - TcCppUtils2.0                            #
+          # - TcEventLoggerAdsProxy                    # TcEventLoggerAdsProxy
+          # - TcImportCert                             # TcImportCert | Import TwinCAT OEM certificate data into TwinCAT registry
+          # - TcPalDrv                                 # TwinCAT PAL driver
+          # - TcTypeSystem2.7                          #
+          # - TcTypeSystem2.8                          #
+          # - TcUsb                                    # TwinCAT USB driver
+        state: latest
+
+    - name: Install C/C++ development tools
+      ansible.builtin.package:
+        name:
+          - os-generic-userland-devtools
+          - llvm
+          - gdb
+        state: latest
+      when: tc_install_cpp_dev_tools
+
+    - name: Install required TwinCAT Libraries
+      ansible.builtin.package:
+        name:
+          # - TC31-OrderNo                             # Mapping of TwinCAT order numbers to TC/BSD package names
+          # - TC31-TcIoPtp                             # TcIoPtp | TC3 Precise Time Protocol
+          # - TC31-TcOsSys                             # TwinCAT runtime component TcOsSys.dll and TwinCAT license text
+          # - TC31-XAR                                 # TwinCAT System Service
+          # - TC31-XAR-EtherCATSlave                   # TwinCAT EtherCATSlave driver
+          # - TCBSD-CrossBuildSDK                      # SDK for TC/BSD cross-compilation
+          # - TCBSD-Install-Scripts                    # TCBSD installer scripts
+          # - TF1810-PLC-HMI-Web                       # TF1810 | TC3 PLC HMI Web
+          # - TF2000-HMI-Server                        # TF2000-HMI-Server
+          # - TF3300-Scope-Server-IoT                  #
+          # - TF3500-Analytics-Logger                  # TF3500 | TC3 Analytics Logger
+          # - TF360x-Condition-Monitoring              # TF360x | TC3 Condition Monitoring
+          # - TF3650-Power-Monitoring                  # TF3650 | TC3 Power Monitoring
+          # - TF3800-Machine-Learning                  # TF3800 | TC3 Machine Learning
+          # - TF5000-NC-PTP                            # TwinCAT NC PTP driver
+          # - TF5100-NCI                               # TF5100 | TC3 NC I
+          # - TF5210-CNC-E                             # TF5210 | TC3 CNC E
+          # - TF5850-XTS-Technology                    # TF5850 | XTS Technology
+          # - TF6000-ADS-Comm-Lib                      # TF6000 | TC3 ADS Communication Library
+          # - TF6100-OPC-UA-beta                       # TF6100 | TC3 OPC UA
+          # - TF6230-Parallel-Redundancy-Protocol      # TF6230 | TC3 Parallel Redundancy Protocol
+          # - TF6250-Modbus-TCP                        # TF6250 | TC3 Modbus TCP
+          # - TF627x-PROFINET-RT                       # TwinCAT PROFINET RT driver
+          # - TF6280-EtherNetIP                        # This package was replaces by TF628x-EthernetIP
+          # - TF628x-EtherNetIP                        # TwinCAT EtherNet/IP driver
+          - TF6310-TCP-IP                            # TF6310 | TC3 TCP/IP
+          # - TF6340-Serial-Communication-beta         # TF6340 | TC3 Serial Communication
+          # - TF6420-Database-Server                   # TF6420 | TC3 Database Server
+          # - TF6421-XML-Server                        # TF6421 | TC3 XML Server
+          # - TF6620-S7-Comm                           # TF6620 | S7 Communication
+          # - TF8020-BACnet                            # TwinCAT BACnet driver
+          # - TF8310-Wind-Framework                    # TF8310 | TC3 Wind Framework
+        state: latest
+
+    # Additional pip packages? Add py39-pip  above and do:
+    # - name: Install pip dependencies if required
+    #   ansible.builtin.pip:
+    #     name: lxml >=2.3.0
+    # Want to use hostname -> IP -> ip_to_ams_net_id? Add py39-dnspython to the list
+
+    - name: Set the AMS Net ID
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='AmsNetId']
+        value: "{% import 'ip_macros.j2' as ip_macros %}{{ ip_macros.ams_net_id_to_binary(tc_ams_net_id) }}"
+      register: ams_net_id
+
+    - name: Adjust the locked memory size
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='LockedMemSize']
+        value: "{{ tc_locked_memory_size_bytes | string }}"
+      register: locked_memory_size
+
+    - name: Set the heap memory size
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='HeapMemSizeMB']
+        value: "{{ tc_heap_memory_size_mb | string }}"
+      when: tc_heap_memory_size_mb > 0
+      register: heap_memory_size
+
+      # TODO: can this be combined in the step above?
+    # Sets Type="DW" in <Value Name="HeapMemSizeMB" Type="DW">
+    - name: Tweak the heap memory size to add Type attribute
+      community.general.xml:
+        path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
+        xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='HeapMemSizeMB']
+        attribute: Type
+        value: DW
+      when: tc_heap_memory_size_mb > 0
+
+    - name: Set the hostname
+      ansible.builtin.lineinfile:
+        dest: /etc/rc.conf
+        regexp: '^hostname='
+        line: "hostname=\"{{ inventory_hostname }}\""
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
+    - name: Change default shell for Administrator
+      ansible.builtin.command: chsh -s /usr/local/bin/bash Administrator
+      when: tc_use_bash
+      changed_when: false
+
+    - name: "Include our bash configuration files"
+      ansible.builtin.template:
+        src: "./templates/{{ item }}"
+        dest: "/{{ item }}"
+        owner: Administrator
+        mode: u=rw,g=r,o=
+      when: tc_use_bash
+      loop:
+        - home/Administrator/.bashrc
+        - home/Administrator/.bash_profile
+
+    - name: Include our firewall configuration
+      ansible.builtin.template:
+        src: ./templates/etc/pf.conf.d/siteconf
+        dest: /etc/pf.conf.d/siteconf
+        owner: root
+        mode: u=rw,g=r,o=r
+      register: siteconf
+
+    - name: Include our firewall configuration in /etc/pf.conf
+      ansible.builtin.blockinfile:
+        dest: /etc/pf.conf
+        block: |
+          anchor siteconf
+          load anchor siteconf from "/etc/pf.conf.d/siteconf"
+      register: pf
+
+    - name: Reload packet filter (pf)
+      ansible.builtin.service:
+        name: pf
+        enabled: yes
+        state: reloaded
+      when: siteconf.changed or pf.changed
+
+    - name: Configure a set of fixed static routes with a template
+      ansible.builtin.template:
+        src: "./templates/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        dest: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+        backup: yes
+      tags:
+        - routes
+      when: tc_set_fixed_static_routes
+
+    - name: Add any missing static routes with our tcbsd_route module
+      tcbsd_route:
+        file: "/usr/local/etc/TwinCAT/3.1/Target/StaticRoutes.xml"
+        state: present
+        routes: "{{ tc_add_missing_static_routes }}"
+        # owner: root
+        # group: wheel
+        # mode: u=rw,g=r,o=r
+        # backup: yes
+      tags:
+        - routes
+      when: tc_add_missing_static_routes
+
+    - name: Restart the TwinCAT service
+      ansible.builtin.service:
+        name: TcSystemService
+        enabled: yes
+        state: restarted
+      when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
