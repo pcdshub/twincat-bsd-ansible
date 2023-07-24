@@ -1,5 +1,5 @@
 ---
-- hosts: plcs
+- hosts: tcbsd_plcs
   gather_facts: False
 
   tasks:

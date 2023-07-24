@@ -109,3 +109,8 @@ Try:
 $ meson setup build -Dcpp_std=c++14
 $ make
 ```
+
+### I have multiple PLCs with different roles, where do I put that information?
+
+This repository is for viability testing of deploying PLC settings with ansible
+and isn't intended to be used as-is for actual production deployments.
