@@ -53,7 +53,7 @@ $(PLC_HOST_VARS): Makefile tcbsd-plc.yaml.template
 run-bootstrap: $(PLC_HOST_VARS) tcbsd-bootstrap-playbook.yaml
 	ansible-playbook tcbsd-bootstrap-playbook.yaml
 
-run-provision: run-bootstrap host_inventory.yaml tcbsd-provision-playbook.yaml
+run-provision: run-bootstrap tcbsd-provision-playbook.yaml
 	ansible-playbook tcbsd-provision-playbook.yaml
 
 add-route:
