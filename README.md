@@ -1,12 +1,30 @@
 ## twincat-bsd-ansible-testing
 
+twincat-bsd-ansible-testing: trying out ansible for provisioning TwinCAT BSD PLCs.
+
 ### Install requirements
+
+If you have a physical PLC to use, you'll only need the following:
+
+* bash
+* ansible
+* ``gettext`` to interpolate the host variable template
+
+To work using a PLC Virtual Machine (i.e., without a physical PLC), you'll also
+need the following:
 
 * VirtualBox
 * TwinCAT BSD image from Beckhoff
-* bash
-* ansible
-* ``gettext`` to interpolate the host inventory template
+
+### TcBSD Documentation
+
+Here's some documentation from Beckhoff on the OS:
+
+[TwinCAT_BSD_en.pdf](https://download.beckhoff.com/download/Document/ipc/embedded-pc/embedded-pc-cx/TwinCAT_BSD_en.pdf)
+
+And their security recommendations:
+
+[IPC_Security_Guideline_TwinCATBSD_en.pdf](https://download.beckhoff.com/download/document/product-security/Guidelines/IPC_Security_Guideline_TwinCATBSD_en.pdf)
 
 ### Create a VirtualBox VM
 
@@ -95,7 +113,7 @@ Run:
 4. ``make run-provision`` (provision the PLC)
 
 
-## Side notes
+## Side notes / flight rules
 
 ### ADS
 
