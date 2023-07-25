@@ -90,7 +90,7 @@ This will generate a VM with:
 Run:
 
 1. ``make ssh-setup`` (SSH key + initial login)
-2. ``make host_inventory.yaml`` (create host inventory configuration file)
+2. ``make host_vars/test-plc-01/vars.yml`` (create host variable configuration file)
 3. ``make run-bootstrap`` (install Python on the PLC, required for ansible)
 4. ``make run-provision`` (provision the PLC)
 
@@ -112,5 +112,10 @@ $ make
 
 ### I have multiple PLCs with different roles, where do I put that information?
 
-This repository is for viability testing of deploying PLC settings with ansible
-and isn't intended to be used as-is for actual production deployments.
+Per-PLC configuration goes in [host_vars/](host_vars).
+Overall configuration for the "tcbsd_plc" role goes in
+[group_vars/tcbsd_plcs/](group_vars/tcbsd_plcs/).
+
+The host inventory can be restructured to have whatever hierarchy you so choose;
+take a look at the [ansible](https://www.ansible.com/) documentation for further
+details.
