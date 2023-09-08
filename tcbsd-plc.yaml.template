@@ -1,0 +1,3 @@
+---
+ansible_host: ${PLC_IP}
+tc_ams_net_id: ${PLC_NET_ID}

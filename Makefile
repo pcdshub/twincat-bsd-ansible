@@ -1,8 +1,9 @@
 # This is the IP address of the PLC.
 PLC_IP           ?=
-PLC_HOSTNAME     ?= my-plcname
+PLC_HOSTNAME     ?= test-plc-01
 PLC_NET_ID       ?= $(PLC_IP).1.1
 PLC_USERNAME     ?= Administrator
+PLC_HOST_VARS    = host_vars/$(PLC_HOSTNAME)/vars.yml
 SSH_KEY_FILENAME ?= $(shell pwd)/tcbsd_key_rsa
 
 # This auto-detects your local adapter's IP address. It may be completely wrong.
@@ -43,16 +44,17 @@ ssh-setup:
 ssh:
 	ssh -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_IP)" $(SSH_ARGS)
 
-host_inventory.yaml: Makefile host_inventory.yaml.template
+$(PLC_HOST_VARS): Makefile tcbsd-plc.yaml.template
 	# This substitutes our local environment into ``host_inventory.yaml.template``
 	# and writes ``host_inventory.yaml``
-	envsubst < "host_inventory.yaml.template" > "$@"
+	@mkdir -p $(shell dirname "$@")
+	envsubst < "tcbsd-plc.yaml.template" > "$@"
 
-run-bootstrap: host_inventory.yaml tcbsd-bootstrap-playbook.yaml
-	ansible-playbook tcbsd-bootstrap-playbook.yaml -i host_inventory.yaml
+run-bootstrap: $(PLC_HOST_VARS) tcbsd-bootstrap-playbook.yaml
+	ansible-playbook tcbsd-bootstrap-playbook.yaml
 
-run-provision: run-bootstrap host_inventory.yaml tcbsd-provision-playbook.yaml
-	ansible-playbook tcbsd-provision-playbook.yaml -i host_inventory.yaml
+run-provision: run-bootstrap tcbsd-provision-playbook.yaml
+	ansible-playbook tcbsd-provision-playbook.yaml
 
 add-route:
 	# NOTE: the add_route script lazily uses environment variables instead of

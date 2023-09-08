@@ -1,12 +1,30 @@
 ## twincat-bsd-ansible-testing
 
+twincat-bsd-ansible-testing: trying out ansible for provisioning TwinCAT BSD PLCs.
+
 ### Install requirements
+
+If you have a physical PLC to use, you'll only need the following:
+
+* bash
+* ansible
+* ``gettext`` to interpolate the host variable template
+
+To work using a PLC Virtual Machine (i.e., without a physical PLC), you'll also
+need the following:
 
 * VirtualBox
 * TwinCAT BSD image from Beckhoff
-* bash
-* ansible
-* ``gettext`` to interpolate the host inventory template
+
+### TcBSD Documentation
+
+Here's some documentation from Beckhoff on the OS:
+
+[TwinCAT_BSD_en.pdf](https://download.beckhoff.com/download/Document/ipc/embedded-pc/embedded-pc-cx/TwinCAT_BSD_en.pdf)
+
+And their security recommendations:
+
+[IPC_Security_Guideline_TwinCATBSD_en.pdf](https://download.beckhoff.com/download/document/product-security/Guidelines/IPC_Security_Guideline_TwinCATBSD_en.pdf)
 
 ### Create a VirtualBox VM
 
@@ -90,12 +108,12 @@ This will generate a VM with:
 Run:
 
 1. ``make ssh-setup`` (SSH key + initial login)
-2. ``make host_inventory.yaml`` (create host inventory configuration file)
+2. ``make host_vars/test-plc-01/vars.yml`` (create host variable configuration file)
 3. ``make run-bootstrap`` (install Python on the PLC, required for ansible)
 4. ``make run-provision`` (provision the PLC)
 
 
-## Side notes
+## Side notes / flight rules
 
 ### ADS
 
@@ -109,3 +127,13 @@ Try:
 $ meson setup build -Dcpp_std=c++14
 $ make
 ```
+
+### I have multiple PLCs with different roles, where do I put that information?
+
+Per-PLC configuration goes in [host_vars/](host_vars).
+Overall configuration for the "tcbsd_plc" role goes in
+[group_vars/tcbsd_plcs/](group_vars/tcbsd_plcs/).
+
+The host inventory can be restructured to have whatever hierarchy you so choose;
+take a look at the [ansible](https://www.ansible.com/) documentation for further
+details.

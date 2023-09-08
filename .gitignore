@@ -1,7 +1,7 @@
 .DS_Store
 *_rsa
 *.pub
-# Only include the template:
-/host_inventory.yaml
+# Only include the templates here.
+/host_vars/*/*.yml
 TCBSD*.vdi
 TCBSD*.iso

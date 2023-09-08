@@ -1,0 +1,8 @@
+---
+plcs:
+  children:
+    tcbsd_plcs:
+
+tcbsd_plcs:
+  hosts:
+    test-plc-01:
