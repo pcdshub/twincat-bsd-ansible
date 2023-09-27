@@ -1,6 +1,6 @@
-## twincat-bsd-ansible-testing
+## twincat-bsd-ansible
 
-twincat-bsd-ansible-testing: trying out ansible for provisioning TwinCAT BSD PLCs.
+A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
 
 ### Install requirements
 
