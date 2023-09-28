@@ -7,7 +7,7 @@ A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
 If you have a physical PLC to use, you'll only need the following:
 
 * bash
-* ansible, lxml in a working Python 3.9+ environment
+* ansible
 * ``gettext`` to interpolate the host variable template
 
 To work using a PLC Virtual Machine (i.e., without a physical PLC), you'll also
