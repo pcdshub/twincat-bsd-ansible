@@ -34,6 +34,9 @@ endif
 
 all: ssh-setup run-provision
 
+clean:
+	rm -f $(PLC_HOST_VARS)
+
 ssh-setup:
 	if [ ! -f "$(SSH_KEY_FILENAME)" ]; then \
 		ssh-keygen -t rsa -f "$(SSH_KEY_FILENAME)"; \
@@ -61,4 +64,4 @@ add-route:
 	# command-line arguments.
 	bash add_route.sh
 
-.PHONY: all ssh-setup ssh run-provision run-bootstrap add-route
+.PHONY: all clean ssh-setup ssh run-provision run-bootstrap add-route

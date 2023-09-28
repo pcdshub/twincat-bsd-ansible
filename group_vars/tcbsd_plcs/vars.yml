@@ -6,6 +6,11 @@ ansible_become_method: doas
 ansible_become_password: 1  # TODO: vault
 ansible_python_interpreter: /usr/local/bin/python3
 
+# FreeBSD packages are *required* at the moment for py39-lxml.
+# Beckhoff may re-add py39-lxml in the future, so re-evaluate this at that
+# point.
+enable_freebsd_packages: true
+
 # This is the default of 32MB. Set to 67108864 for 64MB of router memory.
 tc_locked_memory_size_bytes: 33554432
 
@@ -18,11 +23,67 @@ tc_use_bash: true
 # Install C/C++ development tools (approximately 1.8GB):
 tc_install_cpp_dev_tools: true
 
-# Install these additional packages:
+# Packages to install:
+tc_libraries:
+# - TC31-OrderNo                             # Mapping of TwinCAT order numbers to TC/BSD package names
+# - TC31-TcIoPtp                             # TcIoPtp | TC3 Precise Time Protocol
+# - TC31-TcOsSys                             # TwinCAT runtime component TcOsSys.dll and TwinCAT license text
+# - TC31-XAR                                 # TwinCAT System Service
+# - TC31-XAR-EtherCATSlave                   # TwinCAT EtherCATSlave driver
+# - TCBSD-CrossBuildSDK                      # SDK for TC/BSD cross-compilation
+# - TCBSD-Install-Scripts                    # TCBSD installer scripts
+# - TF1810-PLC-HMI-Web                       # TF1810 | TC3 PLC HMI Web
+# - TF2000-HMI-Server                        # TF2000-HMI-Server
+# - TF3300-Scope-Server-IoT                  #
+# - TF3500-Analytics-Logger                  # TF3500 | TC3 Analytics Logger
+# - TF360x-Condition-Monitoring              # TF360x | TC3 Condition Monitoring
+# - TF3650-Power-Monitoring                  # TF3650 | TC3 Power Monitoring
+# - TF3800-Machine-Learning                  # TF3800 | TC3 Machine Learning
+# - TF5000-NC-PTP                            # TwinCAT NC PTP driver
+# - TF5100-NCI                               # TF5100 | TC3 NC I
+# - TF5210-CNC-E                             # TF5210 | TC3 CNC E
+# - TF5850-XTS-Technology                    # TF5850 | XTS Technology
+# - TF6000-ADS-Comm-Lib                      # TF6000 | TC3 ADS Communication Library
+# - TF6100-OPC-UA-beta                       # TF6100 | TC3 OPC UA
+# - TF6230-Parallel-Redundancy-Protocol      # TF6230 | TC3 Parallel Redundancy Protocol
+# - TF6250-Modbus-TCP                        # TF6250 | TC3 Modbus TCP
+# - TF627x-PROFINET-RT                       # TwinCAT PROFINET RT driver
+# - TF6280-EtherNetIP                        # This package was replaces by TF628x-EthernetIP
+# - TF628x-EtherNetIP                        # TwinCAT EtherNet/IP driver
+- TF6310-TCP-IP                            # TF6310 | TC3 TCP/IP
+# - TF6340-Serial-Communication-beta         # TF6340 | TC3 Serial Communication
+# - TF6420-Database-Server                   # TF6420 | TC3 Database Server
+# - TF6421-XML-Server                        # TF6421 | TC3 XML Server
+# - TF6620-S7-Comm                           # TF6620 | S7 Communication
+# - TF8020-BACnet                            # TwinCAT BACnet driver
+# - TF8310-Wind-Framework                    # TF8310 | TC3 Wind Framework
+
+tc_tools_packages:
+  - TcAdsTool                    # TcAdsTool | Use the power of ADS from your command line
+  - TcAmsLogger                  # TwinCAT ADS Monitor - AMS Logger
+  # - TcBackup                   # Tools to easily create and restore full system backups
+  # - TcBackup-Gui-Installer     # Tools to easily create and restore full system backups
+  # - TcCoreConf                 # TwinCAT CPU core configuration tool
+  # - TcCppUtils2.0              #
+  # - TcEventLoggerAdsProxy      # TcEventLoggerAdsProxy
+  # - TcImportCert               # TcImportCert | Import TwinCAT OEM certificate data into TwinCAT registry
+  # - TcPalDrv                   # TwinCAT PAL driver
+  # - TcTypeSystem2.7            #
+  # - TcTypeSystem2.8            #
+  # - TcUsb                      # TwinCAT USB driver
+
 tc_packages_to_install:
   - git
   - vim
   - ripgrep
+
+# Packages only available via pip can be installed using this.
+# py39-pip will only be installed if you marked it here.
+# As far as the security implications go: well, that's up to you!
+tc_install_pip_packages:
+#   - pytmc
+# Uninstall pip after using it?
+tc_uninstall_pip: true
 
 # Configure the following static routes (and only those):
 # NOTE: if you don't want to run my arbitrary module, use this instead
