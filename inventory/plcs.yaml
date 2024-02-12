@@ -5,12 +5,12 @@ plcs:
 
 tcbsd_plcs:
   children:
-    tcbsd_tst:
+    tst:
 
-tcbsd_tst:
+tst:
   hosts:
     plc-tst-bsd:
 
-tcbsd_vms:
+vms:
   hosts:
     test-plc-01:

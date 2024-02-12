@@ -13,7 +13,7 @@
 if [ -z "${1}" ]; then
   echo "Ansible target required"
   exit 1
-if
+fi
 
 TARGET="${1}"
 
@@ -29,7 +29,8 @@ if [ ! -x ansible-playbook ]; then
 fi
 
 # Run the bootstrap playbook
-ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}""
+ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
 
 # Run the provision playbook
-ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}""
+ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
+
