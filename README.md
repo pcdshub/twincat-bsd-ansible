@@ -68,7 +68,14 @@ This will generate a VM with:
 * Restarts the TwinCAT service if any TcRegistry changes were made
 
 
-### Sample session
+### Sample session: prod plc
+1. clone the repo
+2. run ``./scripts/first_time_setup.sh your-plc-name``
+3. run ``./scripts/provision_plcs.sh your-plc-name``
+4. commit and submit the hosts config file
+
+
+### Sample session: VM
 
 1. Install requirements
 2. Download TwinCAT BSD image from Beckhoff and put it in the same directory as

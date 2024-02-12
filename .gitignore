@@ -1,7 +1,6 @@
 .DS_Store
 *_rsa
 *.pub
-# Only include the templates here.
-/host_vars/*/*.yml
 TCBSD*.vdi
 TCBSD*.iso
+venv

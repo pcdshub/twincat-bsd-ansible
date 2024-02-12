@@ -54,10 +54,10 @@ $(PLC_HOST_VARS): Makefile tcbsd-plc.yaml.template
 	envsubst < "tcbsd-plc.yaml.template" > "$@"
 
 run-bootstrap: $(PLC_HOST_VARS) tcbsd-bootstrap-playbook.yaml
-	ansible-playbook tcbsd-bootstrap-playbook.yaml
+	ansible-playbook tcbsd-bootstrap-playbook.yaml --extra-vars "target=tcbsd_vms ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
 
 run-provision: run-bootstrap tcbsd-provision-playbook.yaml
-	ansible-playbook tcbsd-provision-playbook.yaml
+	ansible-playbook tcbsd-provision-playbook.yaml --extra-vars "target=tcbsd_vms ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
 
 add-route:
 	# NOTE: the add_route script lazily uses environment variables instead of
