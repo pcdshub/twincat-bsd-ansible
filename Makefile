@@ -41,11 +41,11 @@ ssh-setup:
 	if [ ! -f "$(SSH_KEY_FILENAME)" ]; then \
 		ssh-keygen -t rsa -f "$(SSH_KEY_FILENAME)"; \
 	fi
-	ssh-copy-id -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_IP)"
-	$(MAKE) ssh SSH_ARGS='echo "Successfully logged in with the key to $(PLC_IP)"'
+	ssh-copy-id -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_HOSTNAME)"
+	$(MAKE) ssh SSH_ARGS='echo "Successfully logged in with the key to $(PLC_HOSTNAME)"'
 
 ssh:
-	ssh -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_IP)" $(SSH_ARGS)
+	ssh -i "$(SSH_KEY_FILENAME)" "$(PLC_USERNAME)@$(PLC_HOSTNAME)" $(SSH_ARGS)
 
 $(PLC_HOST_VARS): Makefile tcbsd-plc.yaml.template
 	# This substitutes our local environment into ``host_inventory.yaml.template``

@@ -1,6 +1,6 @@
 ---
 ansible_user: Administrator
-ansible_ssh_private_key_file: /Users/klauer/Repos/twincat-bsd-ansible-testing/tcbsd_key_rsa
+ansible_ssh_private_key_file: /cds/home/z/zlentz/github/twincat-bsd-ansible/tcbsd_key_rsa
 ansible_become: true
 ansible_become_method: doas
 ansible_become_password: 1  # TODO: vault
@@ -17,7 +17,7 @@ tc_locked_memory_size_bytes: 33554432
 # Heap memory size is not specified by default. If you wish to change the
 # default, set this to greater than 0 (e.g., 1024).  This must be
 # greater than the locked memory size for the router, above.
-tc_heap_memory_size_mb: 0
+tc_heap_memory_size_mb: 2048
 # Install and use bash in place of sh:
 tc_use_bash: true
 # Install C/C++ development tools (approximately 1.8GB):
@@ -91,7 +91,4 @@ tc_uninstall_pip: true
 tc_set_fixed_static_routes: []
 
 # Alternatively, only add missing routes from the list:
-tc_add_missing_static_routes:
-  - name: PC98125
-    address: 192.168.2.110
-    net_id: 192.168.2.110.1.1
+tc_add_missing_static_routes: []

@@ -5,4 +5,4 @@ plcs:
 
 tcbsd_plcs:
   hosts:
-    test-plc-01:
+    plc-tst-bsd:
