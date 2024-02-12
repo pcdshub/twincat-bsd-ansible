@@ -13,7 +13,7 @@ fi
 HOSTNAME="${1}"
 
 THIS_SCRIPT="$(realpath "${0}")"
-THIS_DIR="$(dirname "${SCRIPT}")"
+THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 
@@ -32,7 +32,7 @@ fi
 
 # Create an ssh key, if it does not already exist
 if [ ! -f "${SSH_KEY_FILENAME}" ]; then
-	ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
+  ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
 fi
 
 # Send the public key to the plc, if it has not already been done
