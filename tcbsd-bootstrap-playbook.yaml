@@ -1,5 +1,5 @@
 ---
-- hosts: tcbsd_plcs
+- hosts: "{{ target }}"
   gather_facts: False
 
   tasks:
