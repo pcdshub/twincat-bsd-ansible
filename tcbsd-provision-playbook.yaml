@@ -253,13 +253,14 @@
 
       # We use the second port as a LAN port with a known static IP
       # This makes it easy to use if we need it for e.g. doing service
-    - name: Set static IP on X001 (192.168.1.10 netmask 255.255.255.0)
-      register: static_ip_x001_set
+    - name: Set static IP on X000
+      when: x000_static != ""
+      register: static_ip_x000_set
       community.general.sysrc:
         name: ifconfig_igb1
-        value: inet 192.168.1.10 netmask 255.255.255.0
+        value: "inet {{ x000_static }} netmask 255.255.255.0"
 
-    - name: Reset X001
-      when: static_ip_x001_set.changed
+    - name: Reset X000
+      when: static_ip_x000_set.changed
       ansible.builtin.command: /etc/rc.d/netif restart igb1
       changed_when: true

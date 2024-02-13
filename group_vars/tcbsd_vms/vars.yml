@@ -14,6 +14,9 @@ enable_freebsd_packages: true
 use_psproxy: false
 use_psntp: false
 
+# set static IP on x000 (mac id 2)
+x000_static:
+
 # We can set the PLC's timezone, which is largely cosmetic
 # See /usr/share/zoneinfo/ on the PLC for options
 plc_timezone:
