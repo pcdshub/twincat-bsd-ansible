@@ -5,9 +5,9 @@ A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
 
 ### Quick start: set up a new plc in prod
 1. clone the repo
-2. run ``./scripts/first_time_setup.sh your-plc-name``
-3. Edit ``./inventory/plcs.yaml`` to add your plc (and possibly an appropriate group)
-4. Edit ``./host_vars/your-plc-name/vars.yaml`` if you'd like to change settings
+2. Edit ``./inventory/plcs.yaml`` to add your plc (and possibly an appropriate group)
+3. run ``./scripts/first_time_setup.sh your-plc-name``
+4. Optionally edit ``./host_vars/your-plc-name/vars.yaml`` if you'd like to change settings
 3. run ``./scripts/provision_plcs.sh your-plc-name``
 4. commit and submit the file edits as a PR
 
