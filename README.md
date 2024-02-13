@@ -2,6 +2,16 @@
 
 A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
 
+
+### Quick start: set up a new plc in prod
+1. clone the repo
+2. run ``./scripts/first_time_setup.sh your-plc-name``
+3. Edit ``./inventory/plcs.yaml`` to add your plc (and possibly an appropriate group)
+4. Edit ``./host_vars/your-plc-name/vars.yaml`` if you'd like to change settings
+3. run ``./scripts/provision_plcs.sh your-plc-name``
+4. commit and submit the file edits as a PR
+
+
 ### Install requirements
 
 If you have a physical PLC to use, you'll only need the following:
@@ -25,6 +35,7 @@ Here's some documentation from Beckhoff on the OS:
 And their security recommendations:
 
 [IPC_Security_Guideline_TwinCATBSD_en.pdf](https://download.beckhoff.com/download/document/product-security/Guidelines/IPC_Security_Guideline_TwinCATBSD_en.pdf)
+
 
 ### Create a VirtualBox VM
 
@@ -66,13 +77,6 @@ This will generate a VM with:
 * Adds a "site" firewall (pf = packet filter) configuration which lets through insecure ADS
 * Reloads the packet filter if the configuration was changed
 * Restarts the TwinCAT service if any TcRegistry changes were made
-
-
-### Sample session: prod plc
-1. clone the repo
-2. run ``./scripts/first_time_setup.sh your-plc-name``
-3. run ``./scripts/provision_plcs.sh your-plc-name``
-4. commit and submit the hosts config file
 
 
 ### Sample session: VM
