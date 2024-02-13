@@ -4,3 +4,4 @@
 TCBSD*.vdi
 TCBSD*.iso
 venv
+*.swp
