@@ -13,6 +13,48 @@
         path: /usr/local/etc/pkg/repos/FreeBSD.conf
         state: absent
 
+    - name: Setup psproxy
+      when: use_psproxy
+      ansible.builtin.blockinfile:
+        dest: /usr/local/etc/pkg.conf
+        block: |
+          PKG_ENV {
+              http_proxy: "http://psproxy:3128",
+              https_proxy: "http://psproxy:3128",
+          }
+        register: psproxy_setup
+
+    - name: Setup psntp
+      when: use_psntp
+      ansible.builtin.blockinfile:
+        dest: /etc/ntp.conf
+        block: |
+          disable monitor
+
+          # Permit time synchronization with our time source, but do not
+          # permit the source to query or modify the service on this system.
+          restrict default kod nomodify notrap nopeer noquery
+          restrict 127.0.0.1
+
+          server psntp1.pcdsn iburst
+          server psntp2.pcdsn iburst
+          server psntp3.pcdsn iburst
+        register: psntp_setup
+
+    - name: Set timezone
+      when: plc_timezone != ""
+      ansible.builtin.copy:
+        remote_src: true
+        src: "/usr/share/zoneinfo/{{ plc_timezone }}"
+        dest: /etc/localtime
+
+    - name: Restart NTP Service
+      ansible.builtin.service:
+        name: ntpd
+        enabled: yes
+        state: restarted
+      when: psntp_setup.changed
+
     - name: Install helpful system packages
       ansible.builtin.package:
         name:
@@ -188,3 +230,14 @@
         enabled: yes
         state: restarted
       when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
+
+    - name: Set static IP on X001 (192.168.1.10 netmask 255.255.255.0)
+      community.general.sysrc:
+        name: ifconfig_igb1
+        value: inet 192.168.1.10 netmask 255.255.255.0
+        register: static_ip_x001_set
+
+    - name: Reset X001
+      ansible.builtin.command: /etc/rc.d/netif restart igb1
+      when: static_ip_x001_set.changed
+      changed_when: true
