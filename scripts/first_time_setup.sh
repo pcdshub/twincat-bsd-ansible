@@ -1,7 +1,10 @@
 #!/bin/bash
 # Run (or re-run) this script to prepare a single plc for use in the ansible scripts.
-# This will create a host vars entry and set us up for ssh key authentication with the plc.
-# It will also check if your plc is in the inventory and suggest editing the inventory if not.
+# This will do the following, in order:
+# - suggest an edit to the inventory and exit early if needed
+# - create a host vars entry
+# - and set us up for ssh key authentication with the plc
+# - run the bootstrap playbook, so that the provision playbook can run properly
 #
 # Expected usage, e.g. on the bsd test plc:
 #
@@ -23,7 +26,8 @@ INVENTORY_PATH="${ANSIBLE_ROOT}/inventory/plcs.yaml"
 if grep -q "${HOSTNAME}:" "${INVENTORY_PATH}"; then
   echo "Found ${HOSTNAME} in ${INVENTORY_PATH}."
 else
-  echo "Please add ${HOSTNAME} to ${INVENTORY_PATH}"
+  echo "Please add ${HOSTNAME} to ${INVENTORY_PATH} and re-run this script."
+  exit 1
 fi
 
 # Create vars, if they do not already exist
@@ -51,3 +55,13 @@ ssh-copy-id -i "${SSH_KEY_FILENAME}" "${PLC_USERNAME:=Administrator}@${HOSTNAME}
 
 # Check if we can log in using the key
 ssh -i "${SSH_KEY_FILENAME}" "${PLC_USERNAME:=Administrator}@${HOSTNAME}" "echo key-based login test successful"
+
+# Activate python env if we don't have ansible on the path
+if [ ! -x ansible-playbook ]; then
+  # You should create a reasonable venv here, it just needs ansible
+  source "${THIS_DIR}/venv/bin/activate"
+fi
+
+# Run the bootstrap playbook
+TARGET="${HOSTNAME}"
+ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"

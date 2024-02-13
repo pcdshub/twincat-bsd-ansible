@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run the ansible bootstrap and provision scripts on the designated plc or plcs.
+# Run the ansible provision script on the designated plc or group of plcs.
 #
 # To run on a single plc, e.g. the bsd test plc:
 #
@@ -7,7 +7,7 @@
 #
 # To run on a group of plcs, e.g. all of the tst plcs:
 #
-#   $ ./provision_plcs.sh tst
+#   $ ./provision_plcs.sh tst_all
 #
 # Groups are defined in the inventory file.
 if [ -z "${1}" ]; then
@@ -27,9 +27,6 @@ if [ ! -x ansible-playbook ]; then
   # You should create a reasonable venv here, it just needs ansible
   source "${THIS_DIR}/venv/bin/activate"
 fi
-
-# Run the bootstrap playbook
-ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
 
 # Run the provision playbook
 ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
