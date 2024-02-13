@@ -15,6 +15,7 @@
 
     - name: Setup psproxy
       when: use_psproxy
+      register: psproxy_setup
       ansible.builtin.blockinfile:
         dest: /usr/local/etc/pkg.conf
         block: |
@@ -22,10 +23,10 @@
               http_proxy: "http://psproxy:3128",
               https_proxy: "http://psproxy:3128",
           }
-        register: psproxy_setup
 
     - name: Setup psntp
       when: use_psntp
+      register: psntp_setup
       ansible.builtin.blockinfile:
         dest: /etc/ntp.conf
         block: |
@@ -39,7 +40,6 @@
           server psntp1.pcdsn iburst
           server psntp2.pcdsn iburst
           server psntp3.pcdsn iburst
-        register: psntp_setup
 
     - name: Set timezone
       when: plc_timezone != ""
@@ -49,11 +49,11 @@
         dest: /etc/localtime
 
     - name: Restart NTP Service
+      when: psntp_setup.changed
       ansible.builtin.service:
         name: ntpd
         enabled: yes
         state: restarted
-      when: psntp_setup.changed
 
     - name: Install helpful system packages
       ansible.builtin.package:
@@ -86,8 +86,8 @@
       ansible.builtin.pip:
         name: "{{ tc_install_pip_packages }}"
 
-    - name: Install pip
-      # Packages only available via pip will be installed after this
+    - name: Unstall pip
+      # Packages only available via pip will be installed before this
       # As far as the security implications go: well, that's up to you!
       when: tc_uninstall_pip
       ansible.builtin.package:
@@ -232,10 +232,10 @@
       when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
 
     - name: Set static IP on X001 (192.168.1.10 netmask 255.255.255.0)
+      register: static_ip_x001_set
       community.general.sysrc:
         name: ifconfig_igb1
         value: inet 192.168.1.10 netmask 255.255.255.0
-        register: static_ip_x001_set
 
     - name: Reset X001
       ansible.builtin.command: /etc/rc.d/netif restart igb1
