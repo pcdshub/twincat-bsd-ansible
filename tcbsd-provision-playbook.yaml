@@ -106,7 +106,7 @@
       ansible.builtin.pip:
         name: "{{ tc_install_pip_packages }}"
 
-    - name: Unstall pip
+    - name: Uninstall pip
       # Packages only available via pip will be installed before this
       # As far as the security implications go: well, that's up to you!
       when: tc_uninstall_pip
