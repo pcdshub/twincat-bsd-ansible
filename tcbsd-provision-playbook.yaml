@@ -13,6 +13,68 @@
         path: /usr/local/etc/pkg/repos/FreeBSD.conf
         state: absent
 
+    - name: Setup psproxy
+      when: use_psproxy
+      register: psproxy_setup
+      ansible.builtin.blockinfile:
+        # Appending to this file lets us install packages from Beckhoff, etc.
+        # By using psproxy as our http/https proxy
+        dest: /usr/local/etc/pkg.conf
+        block: |
+          PKG_ENV {
+              http_proxy: "http://psproxy:3128",
+              https_proxy: "http://psproxy:3128",
+          }
+
+    # We need NTP sync in order to install packages.
+    # Use internal ntp servers
+    - name: Setup psntp
+      when: use_psntp
+      register: psntp_setup
+      ansible.builtin.blockinfile:
+        dest: /etc/ntp.conf
+        block: |
+          disable monitor
+
+          # Permit time synchronization with our time source, but do not
+          # permit the source to query or modify the service on this system.
+          restrict default kod nomodify notrap nopeer noquery
+          restrict 127.0.0.1
+
+          server psntp1.pcdsn iburst
+          server psntp2.pcdsn iburst
+          server psntp3.pcdsn iburst
+
+    - name: Set timezone
+      when: set_plc_timezone
+      ansible.builtin.copy:
+        # Strangely, copying a file is the designated way to set timezones.
+        remote_src: true
+        src: "/usr/share/zoneinfo/{{ plc_timezone }}"
+        dest: /etc/localtime
+
+    # ntpd does not necessarily re-sync promptly after start or reconfig
+    # stop the service, sync manually, then start it again
+    # (cannot run sync manually if the service is running)
+    - name: Stop NTP Service
+      when: psntp_setup.changed
+      ansible.builtin.service:
+        name: ntpd
+        enabled: yes
+        state: stopped
+
+    - name: Force NTP Sync Now
+      when: psntp_setup.changed
+      ansible.builtin.command: ntpd -g -q
+      changed_when: true
+
+    - name: (Re) Start NTP Service
+      when: psntp_setup.changed
+      ansible.builtin.service:
+        name: ntpd
+        enabled: yes
+        state: started
+
     - name: Install helpful system packages
       ansible.builtin.package:
         name:
@@ -44,8 +106,8 @@
       ansible.builtin.pip:
         name: "{{ tc_install_pip_packages }}"
 
-    - name: Install pip
-      # Packages only available via pip will be installed after this
+    - name: Uninstall pip
+      # Packages only available via pip will be installed before this
       # As far as the security implications go: well, that's up to you!
       when: tc_uninstall_pip
       ansible.builtin.package:
@@ -188,3 +250,17 @@
         enabled: yes
         state: restarted
       when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
+
+      # We use the second port as a LAN port with a known static IP
+      # This makes it easy to use if we need it for e.g. doing service
+    - name: Set static IP on X000
+      when: x000_set_static_ip
+      register: static_ip_x000_set
+      community.general.sysrc:
+        name: ifconfig_igb1
+        value: "inet {{ x000_static_ip }} netmask 255.255.255.0"
+
+    - name: Reset X000
+      when: static_ip_x000_set.changed
+      ansible.builtin.command: /etc/rc.d/netif restart igb1
+      changed_when: true
