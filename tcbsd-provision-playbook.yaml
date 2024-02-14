@@ -46,7 +46,7 @@
           server psntp3.pcdsn iburst
 
     - name: Set timezone
-      when: plc_timezone != ""
+      when: set_plc_timezone
       ansible.builtin.copy:
         # Strangely, copying a file is the designated way to set timezones.
         remote_src: true
@@ -254,11 +254,11 @@
       # We use the second port as a LAN port with a known static IP
       # This makes it easy to use if we need it for e.g. doing service
     - name: Set static IP on X000
-      when: x000_static != ""
+      when: x000_set_static_ip
       register: static_ip_x000_set
       community.general.sysrc:
         name: ifconfig_igb1
-        value: "inet {{ x000_static }} netmask 255.255.255.0"
+        value: "inet {{ x000_static_ip }} netmask 255.255.255.0"
 
     - name: Reset X000
       when: static_ip_x000_set.changed

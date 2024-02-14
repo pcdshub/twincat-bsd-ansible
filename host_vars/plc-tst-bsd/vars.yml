@@ -19,10 +19,12 @@ tc_ams_net_id: 172.21.148.81.1.1
 #use_psntp: true
 #
 # set static IP on x000 (mac id 2)
-#x000_static: 192.168.1.10
+#x000_set_static_ip: true
+#x000_static_ip: 192.168.1.10
 #
 ## We can set the PLC's timezone, which is largely cosmetic
 ## See /usr/share/zoneinfo/ on the PLC for options
+#set_plc_timezone: true
 #plc_timezone: America/Los_Angeles
 #
 ## This is the default of 32MB. Set to 67108864 for 64MB of router memory.

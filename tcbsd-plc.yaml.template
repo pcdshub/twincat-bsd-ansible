@@ -19,7 +19,8 @@ tc_ams_net_id: ${PLC_NET_ID}
 #use_psntp: true
 #
 ## set static IP on x000 (mac id 2)
-#x000_static: 192.168.1.10
+#x000_set_static_ip: true
+#x000_static_ip: 192.168.1.10
 #
 ## We can set the PLC's timezone, which is largely cosmetic
 ## See /usr/share/zoneinfo/ on the PLC for options
