@@ -4,4 +4,4 @@
 
   tasks:
     - name: Bootstrap dependencies for ansible
-      ansible.builtin.raw: test -e /usr/local/bin/python3 || pkg install -y python3
+      ansible.builtin.script: remote_bootstrap.sh

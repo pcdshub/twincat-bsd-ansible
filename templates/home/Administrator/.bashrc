@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2139
 
 # If not running interactively, don't do anything
 case $- in
@@ -7,15 +8,13 @@ case $- in
 esac
 
 # Include Beckhoff defaults from sh:
-# This has these aliases:
-#   alias h='fc -l'
-#   alias j=jobs
-#   alias m="$PAGER"
-#   alias ll='ls -laFo'
-#   alias l='ls -l'
-#   alias g='egrep -i'
-#   alias sudo=doas
-[ -f "$HOME/.shrc" ] && source "$HOME/.shrc"
+alias h='fc -l'
+alias j=jobs
+alias m="$PAGER"
+alias ll='ls -laFo'
+alias l='ls -l'
+alias g='egrep -i'
+alias sudo=doas
 
 # Include bash tab completion:
 [ -f " /usr/local/share/bash-completion/bash_completion.sh" ] && \

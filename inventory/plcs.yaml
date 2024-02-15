@@ -9,7 +9,8 @@ tcbsd_plcs:
 
 tst_all:
   hosts:
-    plc-tst-bsd:
+    plc-tst-bsd1:
+    plc-tst-bsd2:
 
 vms_all:
   hosts:

@@ -5,10 +5,8 @@ ansible_become_method: doas
 ansible_become_password: 1  # TODO: vault
 ansible_python_interpreter: /usr/local/bin/python3
 
-# FreeBSD packages are *required* at the moment for py39-lxml.
-# Beckhoff may re-add py39-lxml in the future, so re-evaluate this at that
-# point.
-enable_freebsd_packages: true
+# FreeBSD packages are no longer required, beckhoff added py39-lxml again.
+enable_freebsd_packages: false
 
 # psproxy and psntp are currently needed to get bsd and package updates while on the lcls cds networks
 use_psproxy: false
