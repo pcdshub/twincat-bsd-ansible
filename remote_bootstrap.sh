@@ -11,6 +11,8 @@ if ! test -e /bin/freebsd-version; then
   exit
 fi
 
+set -e
+
 # setup psproxy if needed
 if ! grep ANSIBLE /usr/local/etc/pkg.conf; then
   echo "

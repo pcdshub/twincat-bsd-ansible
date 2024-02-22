@@ -1,5 +1,5 @@
 ---
-ansible_host: 172.21.148.81
+ansible_host: plc-tst-bsd1
 tc_ams_net_id: 172.21.148.81.1.1
 
 # Uncomment any setting below to override a default setting

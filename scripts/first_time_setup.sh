@@ -15,6 +15,7 @@ if [ -z "${1}" ]; then
 fi
 
 HOSTNAME="${1}"
+shift
 
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
@@ -33,9 +34,10 @@ fi
 # Create vars, if they do not already exist
 VARS_PATH="${ANSIBLE_ROOT}/host_vars/${HOSTNAME}/vars.yml"
 if [ ! -f  "${VARS_PATH}" ]; then
-  # Get the variables that the template is expecting
-  PLC_IP="$(getent hosts "${HOSTNAME}" | cut -f 1 -d " ")"
-  PLC_NET_ID="${PLC_IP}.1.1"
+  # Template uses IP, but hostname is also valid
+  PLC_IP="${HOSTNAME}"
+  RAW_IP="$(getent hosts "${HOSTNAME}" | cut -f 1 -d " ")"
+  PLC_NET_ID="${RAW_IP}.1.1"
   export PLC_IP
   export PLC_NET_ID
   mkdir -p "$(dirname "${VARS_PATH}")"
@@ -64,4 +66,4 @@ fi
 
 # Run the bootstrap playbook
 TARGET="${HOSTNAME}"
-ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}"
+ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" "$@"

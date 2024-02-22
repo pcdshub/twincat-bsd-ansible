@@ -7,6 +7,10 @@ tcbsd_plcs:
   children:
     tst_all:
 
+tmo_all:
+  hosts:
+    plc-tmo-tmp-vac:
+
 tst_all:
   hosts:
     plc-tst-bsd1:
