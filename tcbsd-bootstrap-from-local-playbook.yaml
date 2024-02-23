@@ -4,4 +4,4 @@
 
   tasks:
     - name: Bootstrap dependencies for ansible
-      ansible.builtin.raw: test -e /usr/local/bin/python3 || pkg add /home/Administrator/bootstrap/python39-3.9.18.pkg /home/Administrator/bootstrap/python3-3_3.pkg
+      ansible.builtin.raw: test -e /usr/local/bin/python3 || pkg add /home/Administrator/bootstrap/*.pkg
