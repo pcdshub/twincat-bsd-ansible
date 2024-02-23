@@ -25,8 +25,7 @@ SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 
 # Activate python env if we don't have ansible on the path
 if [ ! -x ansible-playbook ]; then
-  # You should create a reasonable venv here, it just needs ansible
-  source "${THIS_DIR}/venv/bin/activate"
+  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
 fi
 
 # Run the provision playbook
