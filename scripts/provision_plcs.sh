@@ -1,9 +1,9 @@
 #!/bin/bash
 # Run the ansible provision script on the designated plc or group of plcs.
 #
-# To run on a single plc, e.g. the bsd test plc:
+# To run on a single plc, e.g. a bsd test plc:
 #
-#   $ ./provision_plcs.sh plc-tst-bsd
+#   $ ./provision_plcs.sh plc-tst-bsd1
 #
 # To run on a group of plcs, e.g. all of the tst plcs:
 #

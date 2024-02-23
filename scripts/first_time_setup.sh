@@ -6,9 +6,9 @@
 # - and set us up for ssh key authentication with the plc
 # - run the bootstrap playbook, so that the provision playbook can run properly
 #
-# Expected usage, e.g. on the bsd test plc:
+# Expected usage, e.g. on a bsd test plc:
 #
-#   $ ./first_time_setup.sh plc-tst-bsd
+#   $ ./first_time_setup.sh plc-tst-bsd1
 set -e
 
 if [ -z "${1}" ]; then
@@ -79,7 +79,9 @@ else
   exit
 fi
 
-# Copy the python packages over
+# Remove any existing previous bootstrap folder
+ssh -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e ~/bootstrap && rm -rf ~/bootstrap"
+# Copy the python packages and their dependencies over
 scp -i "${SSH_KEY_FILENAME}" -r "${SOURCE_DIR}" "${USERNAME}@${HOSTNAME}:~/bootstrap"
 
 # Activate python env if we don't have ansible on the path
