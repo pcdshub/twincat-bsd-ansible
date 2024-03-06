@@ -2,5 +2,5 @@ Host *
     ForwardAgent no
     ForwardX11 no
     ForwardX11Trusted no
-    PreferredAuthentications=publickey,keyboard-interactive
+    PreferredAuthentications=publickey
     User Administrator

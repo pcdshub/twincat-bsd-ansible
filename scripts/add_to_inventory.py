@@ -49,7 +49,7 @@ def host_in_inventory(hostname: str, inventory: _Inventory) -> bool:
         try:
             if hostname in dct["hosts"]:
                 return True
-        except KeyError:
+        except (KeyError, TypeError):
             pass
     return False
 
@@ -68,6 +68,9 @@ def get_group_options(inventory: _Inventory) -> list[str]:
 def main(hostname: str, group: str = "") -> int:
     inventory_path = Path(__file__).parent.parent / "inventory" / "plcs.yaml"
     inventory = load_inventory(path=inventory_path)
+    if host_in_inventory(hostname=hostname, inventory=inventory):
+        print(f"{hostname} already in inventory, skipping!")
+        return 0
     options = get_group_options(inventory=inventory)
     text_options = "\n".join(options)
     while group not in options:

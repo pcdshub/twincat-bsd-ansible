@@ -25,6 +25,7 @@ THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 INVENTORY_PATH="${ANSIBLE_ROOT}/inventory/plcs.yaml"
+SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
 
 # Check the inventory for your plc
 if grep -q "${HOSTNAME}:" "${INVENTORY_PATH}"; then
@@ -56,20 +57,20 @@ if [ ! -f "${SSH_KEY_FILENAME}" ]; then
 fi
 
 # Send the public key to the plc, if it has not already been done
-ssh-copy-id -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}"
+ssh-copy-id -i "${SSH_KEY_FILENAME}" -o PreferredAuthentications=keyboard-interactive "${USERNAME}@${HOSTNAME}"
 
 # Check if we can log in using the key
-ssh -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "echo key-based login test successful"
+ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "echo key-based login test successful"
 
 # Check if python3 is installed
-HAS_PYTHON="$(ssh -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e /usr/local/bin/python3 && echo yes || echo no")"
+HAS_PYTHON="$(ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e /usr/local/bin/python3 && echo yes || echo no")"
 if [ "${HAS_PYTHON}" == "yes" ]; then
   echo "Already has python3, exiting"
   exit
 fi
 
 # Check the bsd os version
-BSD_VER="$(ssh -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "freebsd-version" | cut -d . -f 1)"
+BSD_VER="$(ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "freebsd-version" | cut -d . -f 1)"
 if [ "${BSD_VER}" == "13" ]; then
   SOURCE_DIR="/cds/group/pcds/tcbsd/bootstrap/bsd13"
 elif [ "${BSD_VER}" == "14" ]; then
@@ -80,9 +81,9 @@ else
 fi
 
 # Remove any existing previous bootstrap folder
-ssh -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e ~/bootstrap && rm -rf ~/bootstrap"
+ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e ~/bootstrap && rm -rf ~/bootstrap || true"
 # Copy the python packages and their dependencies over
-scp -i "${SSH_KEY_FILENAME}" -r "${SOURCE_DIR}" "${USERNAME}@${HOSTNAME}:~/bootstrap"
+scp -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -r "${SOURCE_DIR}" "${USERNAME}@${HOSTNAME}:~/bootstrap"
 
 # Activate python env if we don't have ansible on the path
 if [ ! -x ansible-playbook ]; then
