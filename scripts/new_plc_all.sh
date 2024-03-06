@@ -13,8 +13,14 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
+# Activate python env if we don't have ansible on the path
+if [ ! -x ansible-playbook ]; then
+  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
+fi
+
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 
+python "${THIS_DIR}"/add_to_inventory.py "${1}"
 "${THIS_DIR}"/first_time_setup.sh "${1}"
 "${THIS_DIR}"/provision_plcs.sh "${1}"
