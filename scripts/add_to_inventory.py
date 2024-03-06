@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from ruamel import yaml
+from ruamel.yaml import YAML
 
+yaml = None
 _Inventory = dict[str, dict]
+
 
 def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -19,18 +21,26 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def init_yaml():
+    global yaml
+    yaml = YAML(typ="rt")
+
+
 def load_inventory(path: str | Path) -> _Inventory:
+    if yaml is None:
+        init_yaml()
     with Path(path).open("r") as fd:
-        return yaml.load(fd, Loader=yaml.RoundTripLoader)
+        return yaml.load(fd)
 
 
 def write_inventory(path: str | Path, inventory: _Inventory) -> None:
+    if yaml is None:
+        raise RuntimeError("Must load before dumping")
     with Path(path).open("w") as fd:
         fd.write("---\n")
         yaml.dump(
             inventory,
             fd,
-            Dumper=yaml.RoundTripDumper,
         )
 
 
