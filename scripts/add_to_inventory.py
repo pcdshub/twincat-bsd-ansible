@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 from ruamel import yaml
 
-Inventory = dict[str, dict]
+_Inventory = dict[str, dict]
 
 def get_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -19,15 +19,14 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def load_inventory(path: str | Path) -> Inventory:
+def load_inventory(path: str | Path) -> _Inventory:
     with Path(path).open("r") as fd:
         return yaml.load(fd, Loader=yaml.RoundTripLoader)
 
 
-def write_inventory(path: str | Path, inventory: Inventory) -> None:
+def write_inventory(path: str | Path, inventory: _Inventory) -> None:
     with Path(path).open("w") as fd:
         fd.write("---\n")
-        yaml.indent(mapping=2, sequence=4, offset=2)
         yaml.dump(
             inventory,
             fd,
@@ -35,7 +34,7 @@ def write_inventory(path: str | Path, inventory: Inventory) -> None:
         )
 
 
-def host_in_inventory(hostname: str, inventory: Inventory) -> bool:
+def host_in_inventory(hostname: str, inventory: _Inventory) -> bool:
     for dct in inventory.values():
         try:
             if hostname in dct["hosts"]:
@@ -45,14 +44,14 @@ def host_in_inventory(hostname: str, inventory: Inventory) -> bool:
     return False
 
 
-def add_host_to_group(hostname: str, group: str, inventory: Inventory) -> None:
+def add_host_to_group(hostname: str, group: str, inventory: _Inventory) -> None:
     hosts_in_group = list(inventory[group]["hosts"])
     hosts_in_group.append(hostname)
     hosts_in_group.sort()
     inventory[group]["hosts"] = {name: None for name in hosts_in_group}
 
 
-def get_group_options(inventory: Inventory) -> list[str]:
+def get_group_options(inventory: _Inventory) -> list[str]:
     return [key for key in inventory if key not in ("plcs", "tcbsd_plcs")]
 
 
@@ -62,10 +61,10 @@ def main(hostname: str, group: str = "") -> int:
     options = get_group_options(inventory=inventory)
     text_options = "\n".join(options)
     while group not in options:
-        print(f"Please select a group from the following options:\n{text_options}")
+        print(f"Please select a group from the following options:\n{text_options}\n")
         group = input().strip()
     print(f"Adding {hostname} to group {group}")
-    add_host_to_group(hostname=hostname, group=group, inventory=Inventory)
+    add_host_to_group(hostname=hostname, group=group, inventory=inventory)
     write_inventory(path=inventory_path, inventory=inventory)
     return 0
 
