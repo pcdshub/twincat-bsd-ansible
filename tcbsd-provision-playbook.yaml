@@ -171,7 +171,7 @@
         value: DW
       when: tc_heap_memory_size_mb > 0
 
-    - name: Set the hostname
+    - name: Set the startup hostname
       ansible.builtin.lineinfile:
         dest: /etc/rc.conf
         regexp: '^hostname='
@@ -179,6 +179,10 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+
+    - name: Set the live hostname
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
 
     - name: Change default shell for Administrator
       ansible.builtin.command: chsh -s /usr/local/bin/bash Administrator
