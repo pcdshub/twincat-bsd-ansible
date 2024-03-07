@@ -2,7 +2,7 @@
 ansible_host: plc-tst-bsd1
 tc_ams_net_id: 172.21.148.81.1.1
 
-# Uncomment any setting below to override a default setting
+# Uncomment any setting below and change it to override a default setting.
 #ansible_user: Administrator
 #ansible_become: true
 #ansible_become_method: doas
@@ -22,6 +22,7 @@ tc_ams_net_id: 172.21.148.81.1.1
 #
 ## We can set the PLC's timezone, which is largely cosmetic
 ## See /usr/share/zoneinfo/ on the PLC for options
+#set_plc_timezone: true
 #plc_timezone: America/Los_Angeles
 #
 ## This is the default of 32MB. Set to 67108864 for 64MB of router memory.

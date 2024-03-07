@@ -40,6 +40,6 @@ tst_all:
   hosts:
     plc-tst-bsd1:
     plc-tst-bsd2:
-vms_all:
+tcbsd_vms:
   hosts:
     test-plc-01:

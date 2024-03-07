@@ -8,7 +8,7 @@
 #
 # Expected usage, e.g. on a bsd test plc:
 #
-#   $ ./first_time_setup.sh plc-tst-bsd1
+#   $ ./bootstrap_plc.sh plc-tst-bsd1
 set -e
 
 if [ -z "${1}" ]; then
@@ -16,10 +16,15 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
-USERNAME="${PLC_USERNAME:=Administrator}"
 HOSTNAME="${1}"
 shift
 
+# Activate python env if we don't have ansible on the path
+if [ ! -x ansible-playbook ]; then
+  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
+fi
+
+USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
@@ -31,22 +36,14 @@ SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
 if grep -q "${HOSTNAME}:" "${INVENTORY_PATH}"; then
   echo "Found ${HOSTNAME} in ${INVENTORY_PATH}."
 else
-  echo "Please add ${HOSTNAME} to ${INVENTORY_PATH} and re-run this script."
-  exit 1
+  # Add PLC to inventory
+  python "${THIS_DIR}"/add_to_inventory.py "${1}"
 fi
 
 # Create vars, if they do not already exist
 VARS_PATH="${ANSIBLE_ROOT}/host_vars/${HOSTNAME}/vars.yml"
 if [ ! -f  "${VARS_PATH}" ]; then
-  # Template uses IP, but hostname is also valid
-  PLC_IP="${HOSTNAME}"
-  RAW_IP="$(getent hosts "${HOSTNAME}" | cut -f 1 -d " ")"
-  PLC_NET_ID="${RAW_IP}.1.1"
-  export PLC_IP
-  export PLC_NET_ID
-  mkdir -p "$(dirname "${VARS_PATH}")"
-  envsubst < "${ANSIBLE_ROOT}/tcbsd-plc.yaml.template" > "${VARS_PATH}"
-  echo "Created ${VARS_PATH}, please edit this as needed for plc-specific settings."
+  python "${THIS_DIR}"/make_vars.py "${HOSTNAME}"
 else
   echo "${VARS_PATH} already exists, skipping creation."
 fi
@@ -84,11 +81,6 @@ fi
 ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e ~/bootstrap && rm -rf ~/bootstrap || true"
 # Copy the python packages and their dependencies over
 scp -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -r "${SOURCE_DIR}" "${USERNAME}@${HOSTNAME}:~/bootstrap"
-
-# Activate python env if we don't have ansible on the path
-if [ ! -x ansible-playbook ]; then
-  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
-fi
 
 # Run the local install version of the bootstrap playbook
 ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-from-local-playbook.yaml" --extra-vars "target=${HOSTNAME} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" "$@"

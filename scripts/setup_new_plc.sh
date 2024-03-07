@@ -5,7 +5,7 @@
 #
 # Expected usage, e.g. on a bsd test plc:
 #
-#  $ ./new_plc_all.sh plc-tst-bsd1
+#  $ ./setup_new_plc.sh plc-tst-bsd1
 set -e
 
 if [ -z "${1}" ]; then
@@ -21,6 +21,5 @@ fi
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 
-python "${THIS_DIR}"/add_to_inventory.py "${1}"
-"${THIS_DIR}"/first_time_setup.sh "${1}"
-"${THIS_DIR}"/provision_plcs.sh "${1}"
+"${THIS_DIR}"/bootstrap_plc.sh "${1}"
+"${THIS_DIR}"/provision_plc.sh "${1}"
