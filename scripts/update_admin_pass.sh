@@ -25,7 +25,7 @@ ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
 
-# Register the ssh key with the ssh agent if needed.
+# Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"
 
 for HOSTNAME in "$@"; do
@@ -33,4 +33,5 @@ for HOSTNAME in "$@"; do
     ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -t "${USERNAME}@${HOSTNAME}" passwd
 done
 
-# TODO stop the ssh agent if we started it here
+# Stop the ssh agent if we started it here
+ssh_agent_helper_cleanup

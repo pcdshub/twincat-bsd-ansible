@@ -16,9 +16,15 @@ fi
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 
-# Register the ssh key with the ssh agent if needed.
+# Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"
 
 # Run both playbooks and one-time pre-playbook setup
 "${THIS_DIR}"/bootstrap_plc.sh "${1}"
 "${THIS_DIR}"/provision_plc.sh "${1}"
+
+# Stop the ssh agent if we started it here
+if [ "${HELPER_STARTED_AGENT}" = "YES" ] && [ -n "${SSH_AGENT_PID}" ]; then
+  echo "Cleaning up SSH agent."
+  kill "${SSH_AGENT_PID}"
+fi

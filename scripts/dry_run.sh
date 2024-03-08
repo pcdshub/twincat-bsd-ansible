@@ -21,10 +21,5 @@ shift
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 
-# Register the ssh key with the ssh agent if needed.
-source "${THIS_DIR}/ssh_agent_helper.sh"
-
 echo "Running provision_plc.sh in dry-run mode (--check, --diff)"
 "${THIS_DIR}"/provision_plc.sh "${TARGET}" --check --diff "$@"
-
-# TODO stop the ssh agent if we started it here

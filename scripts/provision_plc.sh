@@ -23,15 +23,16 @@ THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 
-# Register the ssh key with the ssh agent if needed.
-source "${THIS_DIR}/ssh_agent_helper.sh"
-
 # Activate python env if we don't have ansible on the path
 if [ ! -x ansible-playbook ]; then
   source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
 fi
 
+# Register the ssh key with the ssh agent if needed
+source "${THIS_DIR}/ssh_agent_helper.sh"
+
 # Run the provision playbook
 ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" --ask-become-pass "$@"
 
-# TODO stop the ssh agent if we started it here
+# Stop the ssh agent if we started it here
+ssh_agent_helper_cleanup
