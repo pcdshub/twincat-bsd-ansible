@@ -3,11 +3,11 @@
 #
 # To run on a single plc, e.g. a bsd test plc:
 #
-#   $ ./provision_plcs.sh plc-tst-bsd1
+#   $ ./provision_plc.sh plc-tst-bsd1
 #
 # To run on a group of plcs, e.g. all of the tst plcs:
 #
-#   $ ./provision_plcs.sh tst_all
+#   $ ./provision_plc.sh tst_all
 #
 # Groups are defined in the inventory file.
 if [ -z "${1}" ]; then
