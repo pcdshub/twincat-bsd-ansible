@@ -307,7 +307,7 @@
       ansible.builtin.shell:
         executable: /usr/local/bin/bash
         cmd: "sleep 1; /etc/rc.d/netif restart igb0 &"
-      async: 100
+      async: "{{ ansible_check_mode | ternary(0, 100) }}"
       poll: 0
 
     - name: Reset X001 (async, dhcp)
@@ -315,7 +315,7 @@
       ansible.builtin.shell:
         executable: /usr/local/bin/bash
         cmd: "sleep 1; dhclient igb0 &"
-      async: 100
+      async: "{{ ansible_check_mode | ternary(0, 100) }}"
       poll: 0
 
     - name: Wait for X001 network to resume
