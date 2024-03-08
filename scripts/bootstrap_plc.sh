@@ -59,6 +59,15 @@ ssh-copy-id -i "${SSH_KEY_FILENAME}" -o PreferredAuthentications=keyboard-intera
 # Check if we can log in using the key
 ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "echo key-based login test successful"
 
+# Check if the default password has been changed and prompt us to change it
+PASS_WARNING="$(ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -x /home/Administrator/.default_warning && /home/Administrator/.default_warning || true")"
+if [ -n "${PASS_WARNING}" ]; then
+  echo "Please change the default password to the standard admin password."
+  ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -t "${USERNAME}@${HOSTNAME}" passwd
+else
+  echo "Password has been changed from default."
+fi
+
 # Check if python3 is installed
 HAS_PYTHON="$(ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" "${USERNAME}@${HOSTNAME}" "test -e /usr/local/bin/python3 && echo yes || echo no")"
 if [ "${HAS_PYTHON}" == "yes" ]; then
