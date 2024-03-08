@@ -6,7 +6,6 @@ tc_ams_net_id: 172.21.148.94.1.1
 #ansible_user: Administrator
 #ansible_become: true
 #ansible_become_method: doas
-#ansible_become_password: 1  # TODO: vault
 #ansible_python_interpreter: /usr/local/bin/python3
 #
 ## FreeBSD packages are no longer required, beckhoff added py39-lxml again.

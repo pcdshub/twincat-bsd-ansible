@@ -29,4 +29,4 @@ if [ ! -x ansible-playbook ]; then
 fi
 
 # Run the provision playbook
-ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" "$@"
+ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" --ask-become-pass "$@"
