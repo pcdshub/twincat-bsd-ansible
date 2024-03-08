@@ -13,13 +13,12 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
-# Activate python env if we don't have ansible on the path
-if [ ! -x ansible-playbook ]; then
-  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
-fi
-
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 
+# Register the ssh key with the ssh agent if needed.
+source "${THIS_DIR}/ssh_agent_helper.sh"
+
+# Run both playbooks and one-time pre-playbook setup
 "${THIS_DIR}"/bootstrap_plc.sh "${1}"
 "${THIS_DIR}"/provision_plc.sh "${1}"

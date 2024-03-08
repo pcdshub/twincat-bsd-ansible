@@ -53,6 +53,9 @@ if [ ! -f "${SSH_KEY_FILENAME}" ]; then
   ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
 fi
 
+# Register the ssh key with the ssh agent if needed.
+source "${THIS_DIR}/ssh_agent_helper.sh"
+
 # Send the public key to the plc, if it has not already been done
 ssh-copy-id -i "${SSH_KEY_FILENAME}" -o PreferredAuthentications=keyboard-interactive "${USERNAME}@${HOSTNAME}"
 
@@ -93,3 +96,5 @@ scp -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -r "${SOURCE_DIR}" "${USERNAME}@
 
 # Run the local install version of the bootstrap playbook
 ansible-playbook "${ANSIBLE_ROOT}/tcbsd-bootstrap-from-local-playbook.yaml" --extra-vars "target=${HOSTNAME} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" --ask-become-pass "$@"
+
+# TODO stop the ssh agent if we started it here
