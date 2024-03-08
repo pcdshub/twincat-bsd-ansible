@@ -3,7 +3,7 @@
 
   tasks:
     - name: Verify connectivity with ping
-      ping:
+      ansible.builtin.ping:
 
     - name: Enable FreeBSD packages
       when: enable_freebsd_packages
@@ -255,8 +255,8 @@
         state: restarted
       when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
 
-      # We use the second port as a LAN port with a known static IP
-      # This makes it easy to use if we need it for e.g. doing service
+    # We use the second port as a LAN port with a known static IP
+    # This makes it easy to use if we need it for e.g. doing service
     - name: Set static IP on X000
       when: x000_set_static_ip
       register: static_ip_x000_set
@@ -264,7 +264,61 @@
         name: ifconfig_igb1
         value: "inet {{ x000_static_ip }} netmask 255.255.255.0"
 
+    - name: Set DHCP on X000
+      when: not x000_set_static_ip
+      register: dhcp_x000_set
+      community.general.sysrc:
+        name: ifconfig_igb1
+        state: absent
+
     - name: Reset X000
-      when: static_ip_x000_set.changed
+      when: static_ip_x000_set.changed or dhcp_x000_set.changed
       ansible.builtin.command: /etc/rc.d/netif restart igb1
       changed_when: true
+
+    # We use the first port as a the main CDS port with a DNS-defined IP
+    # Currently we use DHCP, but we could instead set a static IP using this
+    - name: Get static IP details for X001
+      when: x001_set_static_ip
+      register: x001_ip_details
+      ansible.builtin.shell:
+        executable: /usr/local/bin/bash
+        cmd: ifconfig igb0 inet | grep inet | cut -f 2 | cut -f 1-4 -d " "
+
+    - name: Set static IP on X001
+      when: x001_set_static_ip
+      register: static_ip_x001_set
+      community.general.sysrc:
+        name: ifconfig_igb0
+        value: "{{ x001_ip_details.stdout }}"
+
+    - name: Set DHCP on X001
+      when: not x001_set_static_ip
+      register: dhcp_x001_set
+      community.general.sysrc:
+        name: ifconfig_igb0
+        state: absent
+
+    # Note: we have to reset X001 asynchronously
+    # Otherwise, we just drop our connection and hang
+    # because we are using X001 to access the plc
+    - name: Reset X001 (async, static)
+      when: static_ip_x001_set.changed
+      ansible.builtin.shell:
+        executable: /usr/local/bin/bash
+        cmd: "sleep 1; /etc/rc.d/netif restart igb0 &"
+      async: 100
+      poll: 0
+
+    - name: Reset X001 (async, dhcp)
+      when: dhcp_x001_set.changed
+      ansible.builtin.shell:
+        executable: /usr/local/bin/bash
+        cmd: "sleep 1; dhclient igb0 &"
+      async: 100
+      poll: 0
+
+    - name: Wait for X001 network to resume
+      when: static_ip_x001_set.changed or dhcp_x001_set.changed
+      ansible.builtin.wait_for_connection:
+        delay: 2

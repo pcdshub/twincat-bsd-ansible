@@ -16,6 +16,10 @@ use_psntp: false
 x000_set_static_ip: false
 x000_static_ip: 192.168.1.10
 
+# set static IP on x001 (mac id 1)
+# Uses the DHCP assigned address, set statically
+x001_set_static_ip: false
+
 # We can set the PLC's timezone, which is largely cosmetic
 # See /usr/share/zoneinfo/ on the PLC for options
 set_plc_timezone: false
