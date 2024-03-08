@@ -24,7 +24,4 @@ source "${THIS_DIR}/ssh_agent_helper.sh"
 "${THIS_DIR}"/provision_plc.sh "${1}"
 
 # Stop the ssh agent if we started it here
-if [ "${HELPER_STARTED_AGENT}" = "YES" ] && [ -n "${SSH_AGENT_PID}" ]; then
-  echo "Cleaning up SSH agent."
-  kill "${SSH_AGENT_PID}"
-fi
+ssh_agent_helper_cleanup

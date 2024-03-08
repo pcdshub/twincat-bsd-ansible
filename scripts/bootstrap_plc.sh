@@ -51,6 +51,7 @@ fi
 # Create an ssh key, if it does not already exist
 if [ ! -f "${SSH_KEY_FILENAME}" ]; then
   ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
+  chmod g+r "${SSH_KEY_FILENAME}"
 fi
 
 # Register the ssh key with the ssh agent if needed
