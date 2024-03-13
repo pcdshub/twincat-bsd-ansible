@@ -18,8 +18,6 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
-SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
-
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"

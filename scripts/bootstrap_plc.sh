@@ -27,8 +27,6 @@ if [ ! -x ansible-playbook ]; then
   source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
 fi
 
-SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
-
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
@@ -50,13 +48,6 @@ if [ ! -f  "${VARS_PATH}" ]; then
   python "${THIS_DIR}"/make_vars.py "${HOSTNAME}"
 else
   echo "${VARS_PATH} already exists, skipping creation."
-fi
-
-# Create an ssh key, if it does not already exist
-if [ ! -f "${SSH_KEY_FILENAME}" ]; then
-  echo "Generating your PLC Ansible SSH Key at ${SSH_KEY_FILENAME}."
-  echo "Please encrypt this with the TCBSD Admin password!."
-  ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
 fi
 
 # Register the ssh key with the ssh agent if needed

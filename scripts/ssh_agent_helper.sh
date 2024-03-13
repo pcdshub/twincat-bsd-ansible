@@ -9,6 +9,7 @@
 # source ssh_agent_helper.sh
 
 SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
+export SSH_KEY_FILENAME
 
 HELPER_STARTED_AGENT="NO"
 export HELPER_STARTED_AGENT
@@ -27,6 +28,13 @@ ssh_agent_helper_cleanup() {
     fi
 }
 export ssh_agent_helper_cleanup
+
+# Create an ssh key, if it does not already exist
+if [ ! -f "${SSH_KEY_FILENAME}" ]; then
+  echo "Generating your PLC Ansible SSH Key at ${SSH_KEY_FILENAME}."
+  echo "Please encrypt this with the TCBSD Admin password!."
+  ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
+fi
 
 # Multipurpose check: return code is 1 if the command fails, 2 if cannot connect to agent.
 # I'm not sure if need to differentiate between these cases
