@@ -8,10 +8,8 @@
 #
 # source ssh_agent_helper.sh
 
-THIS_SCRIPT="$(realpath "${BASH_SOURCE[0]}")"
-THIS_DIR="$(dirname "${THIS_SCRIPT}")"
-ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
+SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
+
 HELPER_STARTED_AGENT="NO"
 export HELPER_STARTED_AGENT
 
