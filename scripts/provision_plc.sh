@@ -18,10 +18,11 @@ fi
 TARGET="${1}"
 shift
 
+SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
+
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 
 # Activate python env if we don't have ansible on the path
 if [ ! -x ansible-playbook ]; then

@@ -6,6 +6,9 @@
 # - and set us up for ssh key authentication with the plc
 # - run the bootstrap playbook, so that the provision playbook can run properly
 #
+# Each user who wants to use ansible for a particular PLC must run this script!
+# One of the steps is setting up SSH-based logins, which are done on an per-user basis.
+#
 # Expected usage, e.g. on a bsd test plc:
 #
 #   $ ./bootstrap_plc.sh plc-tst-bsd1
@@ -24,11 +27,12 @@ if [ ! -x ansible-playbook ]; then
   source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
 fi
 
+SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
+
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 INVENTORY_PATH="${ANSIBLE_ROOT}/inventory/plcs.yaml"
 SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
 
@@ -50,8 +54,9 @@ fi
 
 # Create an ssh key, if it does not already exist
 if [ ! -f "${SSH_KEY_FILENAME}" ]; then
+  echo "Generating your PLC Ansible SSH Key at ${SSH_KEY_FILENAME}."
+  echo "Please encrypt this with the TCBSD Admin password!."
   ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
-  chmod g+r "${SSH_KEY_FILENAME}"
 fi
 
 # Register the ssh key with the ssh agent if needed

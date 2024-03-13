@@ -18,11 +18,12 @@ if [ -z "${1}" ]; then
   exit 1
 fi
 
+SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
+
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_KEY_FILENAME="${ANSIBLE_ROOT}/tcbsd_key_rsa"
 SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
 
 # Register the ssh key with the ssh agent if needed
