@@ -2,13 +2,10 @@
 ansible_user: Administrator
 ansible_become: true
 ansible_become_method: doas
-ansible_become_password: 1  # TODO: vault
 ansible_python_interpreter: /usr/local/bin/python3
 
-# FreeBSD packages are *required* at the moment for py39-lxml.
-# Beckhoff may re-add py39-lxml in the future, so re-evaluate this at that
-# point.
-enable_freebsd_packages: true
+# FreeBSD packages are no longer required, beckhoff added py39-lxml again.
+enable_freebsd_packages: false
 
 # psproxy and psntp are currently needed to get bsd and package updates while on the lcls cds networks
 use_psproxy: true
@@ -17,6 +14,10 @@ use_psntp: true
 # set static IP on x000 (mac id 2)
 x000_set_static_ip: true
 x000_static_ip: 192.168.1.10
+
+# set static IP on x001 (mac id 1)
+# Uses the DHCP assigned address, set statically
+x001_set_static_ip: false
 
 # We can set the PLC's timezone, which is largely cosmetic
 # See /usr/share/zoneinfo/ on the PLC for options

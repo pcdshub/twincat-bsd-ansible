@@ -2,15 +2,44 @@
 plcs:
   children:
     tcbsd_plcs:
-
 tcbsd_plcs:
   children:
+    kfe_all:
+    tmo_all:
+    rix_all:
+    txi_all:
+    lfe_all:
+    xpp_all:
+    xcs_all:
+    mfx_all:
+    cxi_all:
+    mec_all:
     tst_all:
-
+kfe_all:
+  hosts:
+tmo_all:
+  hosts:
+    plc-tmo-tmp-vac:
+rix_all:
+  hosts:
+txi_all:
+  hosts:
+lfe_all:
+  hosts:
+xpp_all:
+  hosts:
+xcs_all:
+  hosts:
+mfx_all:
+  hosts:
+cxi_all:
+  hosts:
+mec_all:
+  hosts:
 tst_all:
   hosts:
-    plc-tst-bsd:
-
-vms_all:
+    plc-tst-bsd1:
+    plc-tst-bsd2:
+tcbsd_vms:
   hosts:
     test-plc-01:
