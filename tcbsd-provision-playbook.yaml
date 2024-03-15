@@ -12,6 +12,7 @@
         cmd: TcSysExe.exe --mode
 
     - name: Assert that PLC is in CONFIG mode
+      when: not ansible_check_mode
       ansible.builtin.assert:
         that: "{{ 'CONFIG' in plc_mode.stdout }}"
         fail_msg: "PLC is in RUN mode! Abort!"
