@@ -12,6 +12,10 @@ enable_freebsd_packages: false
 use_psproxy: false
 use_psntp: false
 
+# Dynamic AMS net id = set AMS net id to ip addr .1.1
+# Static AMS net id = set AMS net id to the value of tc_ams_net_id
+dynamic_ams: false
+
 # set static IP on x000 (mac id 2)
 x000_set_static_ip: false
 x000_static_ip: 192.168.1.10

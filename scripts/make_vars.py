@@ -10,7 +10,6 @@ import argparse
 import socket
 from typing import Iterator
 from pathlib import Path
-from string import Template
 
 from ruamel.yaml import YAML
 
@@ -65,26 +64,36 @@ def get_netid(hostname: str) -> str:
     return ipaddr + ".1.1"
 
 
+def tcbsd_vms_extra_vars(
+    hostname: str,
+) -> dict[str, str]:
+    """
+    Assign a starting ams net id for the tcbsd vms.
+
+    The IPs for these can be less stable than for CDS PLCs,
+    so don't dynamically update it every run.
+    """
+    return {"tc_ams_net_id": get_netid(hostname)}
+
+
 def write_host_vars(
     hostname: str,
     host_vars_path: str | Path,
     group_vars_path: str | Path,
-    template_path: str | Path,
+    extra_vars: dict[str, str] | None = None,
 ) -> None:
     """Write the vars.yml file given the necessary information."""
-    # Load the template, sub in the values
-    with Path(template_path).open("r") as fd:
-        template = Template(fd.read())
-    host_vars_text = template.substitute(
-        PLC_IP=hostname,
-        PLC_NET_ID=get_netid(hostname=hostname),
-    )
+    if extra_vars is None:
+        extra_vars = {}
     # Load the group vars, prepend with comment
     with Path(group_vars_path).open("r") as fd:
         group_vars_lines = ["#" + line for line in fd.read().splitlines()[1:]]
     # Write the new file
     with Path(host_vars_path).open("w") as fd:
-        fd.write(host_vars_text)
+        fd.write("---\n")
+        fd.write(f"ansible_host: {hostname}\n")
+        for key, value in extra_vars.items():
+            fd.write(f"{key}: {value}")
         fd.write(
             "\n"
             "# Uncomment any setting below and change it "
@@ -104,15 +113,18 @@ def main(hostname: str) -> int:
         inventory_path=inventory_path,
         groups_path=groups_path,
     )
+    if group == "tcbsd_vms":
+        extra_vars = tcbsd_vms_extra_vars(hostname)
+    else:
+        extra_vars = {}
     group_vars_path = groups_path / group / "vars.yml"
-    template_path = repo_root / "tcbsd-plc.yaml.template"
     host_vars_path = repo_root / "host_vars" / hostname / "vars.yml"
     host_vars_path.parent.mkdir(exist_ok=True)
     write_host_vars(
         hostname=hostname,
         host_vars_path=host_vars_path,
         group_vars_path=group_vars_path,
-        template_path=template_path,
+        extra_vars=extra_vars,
     )
     print(
         f"Created {host_vars_path}, "

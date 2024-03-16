@@ -1,6 +1,5 @@
 ---
 ansible_host: plc-tst-bsd1
-tc_ams_net_id: 172.21.148.81.1.1
 
 # Uncomment any setting below and change it to override a default setting.
 #ansible_user: Administrator
@@ -14,6 +13,11 @@ tc_ams_net_id: 172.21.148.81.1.1
 ## psproxy and psntp are currently needed to get bsd and package updates while on the lcls cds networks
 #use_psproxy: true
 #use_psntp: true
+#
+## Dynamic AMS net id = set AMS net id to ip addr .1.1
+## Static AMS net id = set AMS net id to the value of tc_ams_net_id
+#dynamic_ams: true
+## tc_ams_net_id: 0.0.0.0.1.1
 #
 ## set static IP on x000 (mac id 2)
 #x000_set_static_ip: true
