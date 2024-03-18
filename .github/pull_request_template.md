@@ -21,6 +21,7 @@
 
 ## Pre-merge checklist
 - [ ] Code works interactively
+- [ ] Code works interactively in dry_run mode
 - [ ] Code contains descriptive docstrings, including context and API
 - [ ] Pre-commit passes on GitHub Actions
 - [ ] Documentation under https://confluence.slac.stanford.edu/display/PCDS/TcBSD has been updated appropriately
