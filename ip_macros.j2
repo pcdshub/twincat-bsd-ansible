@@ -1,5 +1,5 @@
 {%- macro ip_to_ams_net_id(hostname) -%}
-{%- set ipaddr = lookup('dig', hostname) -%}
+{%- set ipaddr = lookup('community.general.dig', hostname, fail_on_error=True) -%}
 {{ ipaddr }}.1.1
 {%- endmacro -%}
 

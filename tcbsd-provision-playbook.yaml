@@ -156,7 +156,12 @@
       community.general.xml:
         path: /usr/local/etc/TwinCAT/3.1/TcRegistry.xml
         xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='AmsNetId']
-        value: "{% import 'ip_macros.j2' as ip_macros %}{{ ip_macros.ams_net_id_to_binary(tc_ams_net_id) }}"
+        value: >-
+          {%- import 'ip_macros.j2' as ip_macros -%}
+          {%- if dynamic_ams -%}
+          {%- set tc_ams_net_id = ip_macros.ip_to_ams_net_id(ansible_host) -%}
+          {%- endif -%}
+          {{ ip_macros.ams_net_id_to_binary(tc_ams_net_id) }}
       register: ams_net_id
 
     - name: Adjust the locked memory size
