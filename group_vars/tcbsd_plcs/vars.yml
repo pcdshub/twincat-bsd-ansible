@@ -16,6 +16,10 @@ use_psntp: true
 dynamic_ams: true
 # tc_ams_net_id: 0.0.0.0.1.1
 
+# Extra user for non-admin activities
+create_user: true
+create_username: ecs-user
+
 # set static IP on x000 (mac id 2)
 x000_set_static_ip: true
 x000_static_ip: 192.168.1.10

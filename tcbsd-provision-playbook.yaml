@@ -340,3 +340,32 @@
       when: static_ip_x001_set.changed or dhcp_x001_set.changed
       ansible.builtin.wait_for_connection:
         delay: 2
+
+    # Useful for apps that need PLC access but not Admin-level config change access
+    # We need to manually set the password ourselves later via "doas passwd username"
+    - name: Create or Remove non-admin User
+      ansible.builtin.user:
+        name: "{{ create_username }}"
+        state: "{{ create_user | ternary('present', 'absent') }}"
+        shell: /usr/local/bin/bash'
+
+    # By default, only pubkey and keyboard interactive are enabled
+    # Password access is useful for apps like pmpsdb_client
+    - name: Configure sshd for password access
+      register: sshd_configure
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "PasswordAuthentication yes"
+        insertafter: "^#PasswordAuthentication"
+
+    - name: Reload sshd
+      when: sshd_configure.changed
+      ansible.builtin.service:
+        name: sshd
+        enabled: yes
+        state: reloaded
+
+    - name: Verify ssh still works
+      when: sshd_configure.changed
+      ansible.builtin.wait_for_connection:
+        delay: 2
