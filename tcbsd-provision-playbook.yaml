@@ -404,7 +404,7 @@
       ansible.builtin.user:
         name: "{{ create_username }}"
         state: "{{ create_user | ternary('present', 'absent') }}"
-        shell: /usr/local/bin/bash'
+        shell: /usr/local/bin/bash
 
     # By default, only pubkey and keyboard interactive are enabled
     # Password access is useful for apps like pmpsdb_client
