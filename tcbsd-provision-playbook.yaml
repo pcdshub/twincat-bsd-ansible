@@ -198,16 +198,27 @@
         state: latest
       when: tc_install_cpp_dev_tools
 
+    # Note: this job runs even in check mode, to help us figure out if the xar install will happen.
+    - name: "Get available TwinCAT build"
+      when: set_fixed_xar
+      register: pkg_twincat_build
+      changed_when: false
+      check_mode: no
+      ansible.builtin.shell:
+        executable: /usr/local/bin/bash
+        cmd: pkg search TC31-XAR-{{ fixed_xar_version }} | cut -f 1 -d " " | cut -f 2 -d "_"
+
+    - name: "Set fixed TwinCAT Runtime version ({{ fixed_xar_version | default('N/A') }})"
+      when: set_fixed_xar
+      register: xar_install
+      ansible.builtin.package:
+        name: "TC31-XAR-{{ fixed_xar_version }}_{{ pkg_twincat_build.stdout }}"
+        state: present
+
     - name: Install user TwinCAT Libraries
       ansible.builtin.package:
         name: "{{ tc_libraries }}"
         state: latest
-
-    - name: "Set fixed TwinCAT Runtime version ({{ fixed_xar_version | default('N/A') }})"
-      when: set_fixed_xar
-      ansible.builtin.package:
-        name: "TC31-XAR-{{ fixed_xar_version }}"
-        state: present
 
     - name: Set the AMS Net ID
       community.general.xml:
@@ -328,7 +339,7 @@
         name: TcSystemService
         enabled: yes
         state: restarted
-      when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed
+      when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed or xar_install.changed
 
     # We use the second port as a LAN port with a known static IP
     # This makes it easy to use if we need it for e.g. doing service
