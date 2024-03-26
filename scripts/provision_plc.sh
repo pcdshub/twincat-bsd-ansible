@@ -35,3 +35,6 @@ ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "t
 
 # Stop the ssh agent if we started it here
 ssh_agent_helper_cleanup
+
+# Prompt to update deployment docs
+"${THIS_DIR}"/docs_prompt.sh
