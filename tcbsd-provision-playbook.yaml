@@ -184,20 +184,6 @@
         name: "{{ tc_packages_to_install }}"
         state: latest
 
-    - name: Install TwinCAT tools
-      ansible.builtin.package:
-        name: "{{ tc_tools_packages }}"
-        state: latest
-
-    - name: Install C/C++ development tools
-      ansible.builtin.package:
-        name:
-          - os-generic-userland-devtools
-          - llvm
-          - gdb
-        state: latest
-      when: tc_install_cpp_dev_tools
-
     # Note: this job runs even in check mode, to help us figure out if the xar install will happen.
     - name: "Get available TwinCAT build"
       when: set_fixed_xar
@@ -214,6 +200,20 @@
       ansible.builtin.package:
         name: "TC31-XAR-{{ fixed_xar_version }}_{{ pkg_twincat_build.stdout }}"
         state: present
+
+    - name: Install TwinCAT tools
+      ansible.builtin.package:
+        name: "{{ tc_tools_packages }}"
+        state: latest
+
+    - name: Install C/C++ development tools
+      ansible.builtin.package:
+        name:
+          - os-generic-userland-devtools
+          - llvm
+          - gdb
+        state: latest
+      when: tc_install_cpp_dev_tools
 
     - name: Install user TwinCAT Libraries
       ansible.builtin.package:
