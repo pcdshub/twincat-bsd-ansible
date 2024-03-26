@@ -64,6 +64,20 @@ def get_netid(hostname: str) -> str:
     return ipaddr + ".1.1"
 
 
+def tcbsd_plcs_extra_vars() -> dict[str, str]:
+    """
+    Assign a default static TwinCAT runtime (XAR) version for normal PLCs.
+
+    This default to the "normal latest known working" that we use.
+    It should be kept static for a PLC until there is a good reason
+    to update it.
+
+    The version number in this function should be updated when we decide
+    to support a new version.
+    """
+    return {"fixed_xar_version": "4026.3.55"}
+
+
 def tcbsd_vms_extra_vars(
     hostname: str,
 ) -> dict[str, str]:
@@ -93,7 +107,7 @@ def write_host_vars(
         fd.write("---\n")
         fd.write(f"ansible_host: {hostname}\n")
         for key, value in extra_vars.items():
-            fd.write(f"{key}: {value}")
+            fd.write(f"{key}: {value}\n")
         fd.write(
             "\n"
             "# Uncomment any setting below and change it "
@@ -113,7 +127,9 @@ def main(hostname: str) -> int:
         inventory_path=inventory_path,
         groups_path=groups_path,
     )
-    if group == "tcbsd_vms":
+    if group == "tcbsd_plcs":
+        extra_vars = tcbsd_plcs_extra_vars()
+    elif group == "tcbsd_vms":
         extra_vars = tcbsd_vms_extra_vars(hostname)
     else:
         extra_vars = {}

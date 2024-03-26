@@ -26,12 +26,63 @@
         path: /usr/local/etc/pkg/repos/FreeBSD.conf
         state: absent
 
+    - name: Disable FreeBSD packages
+      when: not enable_freebsd_packages
+      ansible.builtin.template:
+        # Put in the file that disables FreeBSD packages
+        src: "./templates/usr/local/etc/pkg/repos/FreeBSD.conf"
+        dest: "/usr/local/etc/pkg/repos/FreeBSD.conf"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
+    - name: Enable TcBSD packages
+      when: enable_tcbsd_packages
+      ansible.builtin.file:
+        path: /usr/local/etc/pkg/repos/FreeBSD.conf
+        state: absent
+
+    - name: Disable TcBSD packages
+      when: not enable_tcbsd_packages
+      ansible.builtin.template:
+        # Put in the file that disables TcBSD packages
+        src: "./templates/usr/local/etc/pkg/repos/TCBSD.conf"
+        dest: "/usr/local/etc/pkg/repos/TCBSD.conf"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
+    - name: Configure SLAC package mirror repo
+      when: enable_slac_packages
+      ansible.builtin.template:
+        # Make sure we can access the local mirror with fixed xar versions
+        src: "./templates/etc/pkg/SLAC.conf"
+        dest: "/etc/pkg/SLAC.conf"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
+    - name: Enable SLAC package mirror
+      when: enable_slac_packages
+      ansible.builtin.file:
+        path: /usr/local/etc/pkg/repos/SLAC.conf
+        state: absent
+
+    - name: Disable SLAC package mirror
+      when: not enable_slac_packages
+      ansible.builtin.template:
+        # Put in the file that disables SLAC packages
+        src: "./templates/usr/local/etc/pkg/repos/SLAC.conf"
+        dest: "/usr/local/etc/pkg/repos/SLAC.conf"
+        owner: root
+        group: wheel
+        mode: u=rw,g=r,o=r
+
     - name: Setup psproxy
-      when: use_psproxy
-      register: psproxy_setup
       ansible.builtin.blockinfile:
         # Appending to this file lets us install packages from Beckhoff, etc.
         # By using psproxy as our http/https proxy
+        state: "{{ use_psproxy | ternary('present', 'absent') }}"
         dest: /usr/local/etc/pkg.conf
         block: |
           PKG_ENV {
@@ -42,9 +93,9 @@
     # We need NTP sync in order to install packages.
     # Use internal ntp servers
     - name: Setup psntp
-      when: use_psntp
       register: psntp_setup
       ansible.builtin.blockinfile:
+        state: "{{ use_psntp | ternary('present', 'absent') }}"
         dest: /etc/ntp.conf
         block: |
           disable monitor
@@ -151,6 +202,12 @@
       ansible.builtin.package:
         name: "{{ tc_libraries }}"
         state: latest
+
+    - name: "Set fixed TwinCAT Runtime version ({{ fixed_xar_version | default('N/A') }})"
+      when: set_fixed_xar
+      ansible.builtin.package:
+        name: "TC31-XAR-{{ fixed_xar_version }}"
+        state: present
 
     - name: Set the AMS Net ID
       community.general.xml:
