@@ -21,8 +21,7 @@ fi
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
-ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
+source "${THIS_DIR}"/paths.sh
 
 # Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"

@@ -23,11 +23,10 @@ HOSTNAME="${1}"
 shift
 
 USERNAME="${PLC_USERNAME:=Administrator}"
+
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
-ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-INVENTORY_PATH="${ANSIBLE_ROOT}/inventory/plcs.yaml"
-SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
+source "${THIS_DIR}"/paths.sh
 
 # Use the correct python env
 source "${THIS_DIR}"/activate_python.sh
