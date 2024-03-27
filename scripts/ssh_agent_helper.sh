@@ -7,6 +7,7 @@
 # Expected usage:
 #
 # source ssh_agent_helper.sh
+set -e
 
 SSH_KEY_FILENAME="${HOME}/.ssh/tcbsd_key_rsa"
 export SSH_KEY_FILENAME
@@ -28,6 +29,8 @@ ssh_agent_helper_cleanup() {
     fi
 }
 export ssh_agent_helper_cleanup
+# Clean up immediately if something in this script fails
+trap ssh_agent_helper_cleanup ERR
 
 # Create an ssh key, if it does not already exist
 if [ ! -f "${SSH_KEY_FILENAME}" ]; then

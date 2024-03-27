@@ -10,6 +10,8 @@
 #   $ ./dry_run.sh tst_all
 #
 # Groups are defined in the inventory file.
+set -e
+
 if [ -z "${1}" ]; then
   echo "Ansible target required"
   exit 1

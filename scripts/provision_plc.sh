@@ -10,6 +10,8 @@
 #   $ ./provision_plc.sh tst_all
 #
 # Groups are defined in the inventory file.
+set -e
+
 if [ -z "${1}" ]; then
   echo "Ansible target required"
   exit 1
@@ -27,12 +29,11 @@ source "${THIS_DIR}"/activate_python.sh
 
 # Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"
+# Stop the ssh agent at exit if we started it here
+trap ssh_agent_helper_cleanup EXIT
 
 # Run the provision playbook
 ansible-playbook "${ANSIBLE_ROOT}/tcbsd-provision-playbook.yaml" --extra-vars "target=${TARGET} ansible_ssh_private_key_file=${SSH_KEY_FILENAME}" --ask-become-pass "$@"
-
-# Stop the ssh agent if we started it here
-ssh_agent_helper_cleanup
 
 # Prompt to update deployment docs
 "${THIS_DIR}"/docs_prompt.sh
