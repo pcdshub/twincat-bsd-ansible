@@ -22,10 +22,8 @@ THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 
-# Activate python env if we don't have ansible on the path
-if [ ! -x ansible-playbook ]; then
-  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
-fi
+# Use the correct python env
+source "${THIS_DIR}"/activate_python.sh
 
 # Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"

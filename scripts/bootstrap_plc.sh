@@ -22,17 +22,15 @@ fi
 HOSTNAME="${1}"
 shift
 
-# Activate python env if we don't have ansible on the path
-if [ ! -x ansible-playbook ]; then
-  source /cds/group/pcds/pyps/conda/venvs/ansible/bin/activate
-fi
-
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
 INVENTORY_PATH="${ANSIBLE_ROOT}/inventory/plcs.yaml"
 SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
+
+# Use the correct python env
+source "${THIS_DIR}"/activate_python.sh
 
 # Check the inventory for your plc
 if grep -q "${HOSTNAME}:" "${INVENTORY_PATH}"; then
