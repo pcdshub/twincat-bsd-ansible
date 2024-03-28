@@ -21,16 +21,14 @@ fi
 USERNAME="${PLC_USERNAME:=Administrator}"
 THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
-ANSIBLE_ROOT="$(realpath "${THIS_DIR}/..")"
-SSH_CONFIG="${ANSIBLE_ROOT}/ssh_config"
+source "${THIS_DIR}"/paths.sh
 
 # Register the ssh key with the ssh agent if needed
 source "${THIS_DIR}/ssh_agent_helper.sh"
+# Stop the ssh agent at exit if we started it here
+trap ssh_agent_helper_cleanup EXIT
 
 for HOSTNAME in "$@"; do
     echo "Logging into ${HOSTNAME}"
     ssh -F "${SSH_CONFIG}" -i "${SSH_KEY_FILENAME}" -t "${USERNAME}@${HOSTNAME}" passwd
 done
-
-# Stop the ssh agent if we started it here
-ssh_agent_helper_cleanup
