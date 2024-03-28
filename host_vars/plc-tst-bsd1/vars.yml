@@ -1,5 +1,6 @@
 ---
 ansible_host: plc-tst-bsd1
+fixed_xar_version: 4026.3.55
 
 # Uncomment any setting below and change it to override a default setting.
 #ansible_user: Administrator
@@ -7,11 +8,23 @@ ansible_host: plc-tst-bsd1
 #ansible_become_method: doas
 #ansible_python_interpreter: /usr/local/bin/python3
 #
-## FreeBSD packages are no longer required, beckhoff added py39-lxml again.
+## freebsd packages are the standard internet packages for bsd
 #enable_freebsd_packages: false
+## tcbsd packages are the latest packages for tcbsd from Beckhoff
+#enable_tcbsd_packages: false
+## slac packages are a specific version-stamped mirror of tcbsd on the internal network
+## this is required if you want control over your XAR version
+#enable_slac_packages: true
 #
-## psproxy and psntp are currently needed to get bsd and package updates while on the lcls cds networks
-#use_psproxy: true
+## fixed XAR ensures you set up the PLC with a known runtime
+## this requires a pkg mirror
+## fixed XAR version should never be defined in a group file, only in a host file, to ensure no surprise updates
+#set_fixed_xar: true
+##fixed_xar_version: 4026.3.55
+#
+## psproxy is needed to get freebsd and tcbsd packages
+#use_psproxy: false
+## an ntp config is needed to get any packages at all, psntp is the internal service at lcls
 #use_psntp: true
 #
 ## Dynamic AMS net id = set AMS net id to ip addr .1.1
