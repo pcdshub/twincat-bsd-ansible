@@ -30,6 +30,7 @@ xpp_all:
   hosts:
 xcs_all:
   hosts:
+    plc-polycap-01:
 mfx_all:
   hosts:
 cxi_all:
@@ -38,6 +39,7 @@ mec_all:
   hosts:
 tst_all:
   hosts:
+    '':
     plc-tst-bsd1:
     plc-tst-bsd2:
 tcbsd_vms:
