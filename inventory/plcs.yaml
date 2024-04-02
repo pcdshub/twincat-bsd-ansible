@@ -14,6 +14,7 @@ tcbsd_plcs:
     mfx_all:
     cxi_all:
     mec_all:
+    las_all:
     tst_all:
 kfe_all:
   hosts:
@@ -37,9 +38,11 @@ cxi_all:
   hosts:
 mec_all:
   hosts:
+las_all:
+  hosts:
+    plc-las-opcpa-eps-02:
 tst_all:
   hosts:
-    '':
     plc-tst-bsd1:
     plc-tst-bsd2:
 tcbsd_vms:
