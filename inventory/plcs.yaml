@@ -20,6 +20,7 @@ kfe_all:
   hosts:
 tmo_all:
   hosts:
+    plc-tmo-motion-tmp:
     plc-tmo-tmp-vac:
 rix_all:
   hosts:
