@@ -14,11 +14,13 @@ tcbsd_plcs:
     mfx_all:
     cxi_all:
     mec_all:
+    las_all:
     tst_all:
 kfe_all:
   hosts:
 tmo_all:
   hosts:
+    plc-tmo-motion-tmp:
     plc-tmo-tmp-vac:
 rix_all:
   hosts:
@@ -30,12 +32,16 @@ xpp_all:
   hosts:
 xcs_all:
   hosts:
+    plc-polycap-01:
 mfx_all:
   hosts:
 cxi_all:
   hosts:
 mec_all:
   hosts:
+las_all:
+  hosts:
+    plc-las-opcpa-eps-02:
 tst_all:
   hosts:
     plc-tst-bsd1:
