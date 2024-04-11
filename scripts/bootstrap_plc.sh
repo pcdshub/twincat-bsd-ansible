@@ -36,7 +36,7 @@ if grep -q "${HOSTNAME}:" "${INVENTORY_PATH}"; then
   echo "Found ${HOSTNAME} in ${INVENTORY_PATH}."
 else
   # Add PLC to inventory
-  python "${THIS_DIR}"/add_to_inventory.py "${1}"
+  python "${THIS_DIR}"/add_to_inventory.py "${HOSTNAME}"
 fi
 
 # Create vars, if they do not already exist

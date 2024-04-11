@@ -8,11 +8,35 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from typing import Any, Literal, Union
 
 from ruamel.yaml import YAML
 
 yaml = None
-_Inventory = dict[str, dict]
+# The yaml has top-level group names as strings
+# Each group will either have hosts or references to children groups in a hierarchy
+# Elements within these sections are dicts, with the keys being the hostnames
+# The sub-dict values either point to None or contain config options (Any)
+# A group's hosts dict might be missing entirely if there are no hosts in that group
+# In these cases, the sub-group is replaced by a None due to the yaml syntax
+# Children groups will always be populated
+# Unions are used explicitly for py39 compat, future doesn't apply to aliases
+_Inventory = dict[
+    str,
+    Union[
+        dict[
+            Literal["hosts"],
+            Union[
+                dict[str, Any],
+                None,
+            ]
+        ],
+        dict[
+            Literal["children"],
+            dict[str, Any]
+        ],
+    ]
+]
 
 
 def get_parser() -> argparse.ArgumentParser:
@@ -65,10 +89,19 @@ def host_in_inventory(hostname: str, inventory: _Inventory) -> bool:
 
 def add_host_to_group(hostname: str, group: str, inventory: _Inventory) -> None:
     """Add hostname to the inventory under the selected group."""
-    hosts_in_group = list(inventory[group]["hosts"])
+    group_dict = inventory[group]
+    try:
+        hosts_dict = group_dict["hosts"]
+    except KeyError:
+        raise ValueError(f"Group {group} is not a hosts group.")
+    if hosts_dict is None:
+        hosts_dict = {}
+    hosts_in_group = list(hosts_dict)
     hosts_in_group.append(hostname)
     hosts_in_group.sort()
-    inventory[group]["hosts"] = {name: None for name in hosts_in_group}
+    inventory[group]["hosts"] = {
+        name: hosts_dict.get(name, None) for name in hosts_in_group
+    }
 
 
 def get_group_options(inventory: _Inventory) -> list[str]:
