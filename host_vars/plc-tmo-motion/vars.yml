@@ -1,5 +1,5 @@
 ---
-ansible_host: plc-tmo-motion-tmp
+ansible_host: plc-tmo-motion
 fixed_xar_version: 4026.3.55
 
 # Uncomment any setting below and change it to override a default setting.
