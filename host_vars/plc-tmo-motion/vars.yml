@@ -1,5 +1,5 @@
 ---
-ansible_host: plc-las-opcpa-eps-02
+ansible_host: plc-tmo-motion
 fixed_xar_version: 4026.3.55
 
 # Uncomment any setting below and change it to override a default setting.
@@ -42,7 +42,7 @@ fixed_xar_version: 4026.3.55
 #
 ## set static IP on x001 (mac id 1)
 ## Uses the DHCP assigned address, set statically
-# x001_set_static_ip: false
+#x001_set_static_ip: false
 #
 ## We can set the PLC's timezone, which is largely cosmetic
 ## See /usr/share/zoneinfo/ on the PLC for options
@@ -129,19 +129,4 @@ fixed_xar_version: 4026.3.55
 #tc_set_fixed_static_routes: []
 #
 ## Alternatively, only add missing routes from the list:
-tc_add_missing_static_routes:
-  - name: PC98592
-    address: 172.21.160.110
-    net_id: 172.21.160.110.1.1
-  - name: PC101509
-    address: 172.21.161.61
-    net_id: 172.21.161.61.1.1
-  - name: PC98638
-    address: 172.21.160.51
-    net_id: 172.21.160.51.1.1
-  - name: PC101594
-    address: 172.21.160.76
-    net_id: 172.21.160.76.1.1
-  - name: PC98103
-    address: 172.21.160.107
-    net_id: 172.21.160.107.1.1
+#tc_add_missing_static_routes: []
