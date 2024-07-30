@@ -25,7 +25,7 @@ tmo_all:
     plc-tmo-vac:
 rix_all:
   hosts:
-    plc-kfe-rix-motion-new:
+    plc-kfe-rix-motion:
     plc-kfe-rix-vac-new:
 txi_all:
   hosts:
