@@ -1,5 +1,5 @@
 ---
-ansible_host: plc-kfe-rix-vac-new
+ansible_host: plc-kfe-rix-vac
 fixed_xar_version: 4026.3.55
 
 # Uncomment any setting below and change it to override a default setting.
