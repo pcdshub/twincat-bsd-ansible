@@ -42,6 +42,7 @@ cxi_all:
   hosts:
 mec_all:
   hosts:
+    plc-mec-jj-motion:
 las_all:
   hosts:
     plc-las-opcpa-eps-02:
