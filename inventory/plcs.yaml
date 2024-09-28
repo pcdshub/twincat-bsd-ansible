@@ -27,6 +27,7 @@ rix_all:
   hosts:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
+    plc-qrix-mot:
 txi_all:
   hosts:
 lfe_all:
