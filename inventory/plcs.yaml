@@ -41,6 +41,7 @@ mfx_all:
   hosts:
 cxi_all:
   hosts:
+    plc-cxi-user:
 mec_all:
   hosts:
     plc-mec-jj-motion:
