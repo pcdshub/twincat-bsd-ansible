@@ -30,6 +30,7 @@ rix_all:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
     plc-qrix-mot:
+    plc-svls-vac:
 txi_all:
   hosts:
 lfe_all:
