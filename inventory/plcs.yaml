@@ -56,6 +56,8 @@ tst_all:
   hosts:
     plc-tst-bsd1:
     plc-tst-bsd2:
+    plc-tst-mkr-01:
+    plc-tst-mkr-02:
 tcbsd_vms:
   hosts:
     test-plc-01:
