@@ -129,4 +129,11 @@ fixed_xar_version: 4026.3.55
 #tc_set_fixed_static_routes: []
 #
 ## Alternatively, only add missing routes from the list:
-#tc_add_missing_static_routes: []
+tc_add_missing_static_routes:
+  - name: ctl-tst-dev-02
+    address: 172.21.148.24
+    net_id: 172.21.148.24.1.1
+  - name: ctl-tst-dev-03
+    address: 172.21.148.78
+    net_id: 172.21.148.78.1.1
+
