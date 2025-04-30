@@ -20,6 +20,7 @@ kfe_all:
   hosts:
 tmo_all:
   hosts:
+    plc-dream-motion:
     plc-dream-vacuum:
     plc-tmo-motion:
     plc-tmo-optics:
