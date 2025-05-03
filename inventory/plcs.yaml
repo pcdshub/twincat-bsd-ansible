@@ -47,6 +47,7 @@ mfx_all:
   hosts:
 cxi_all:
   hosts:
+    plc-cxi-cvmi:
     plc-cxi-user:
 mec_all:
   hosts:
