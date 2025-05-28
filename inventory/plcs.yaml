@@ -57,6 +57,8 @@ las_all:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
+    plc-cc-motion-test:
+    plc-some-name:
     plc-tst-bsd1:
     plc-tst-bsd2:
     plc-tst-mkr-01:
