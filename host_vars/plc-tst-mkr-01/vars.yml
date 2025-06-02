@@ -136,4 +136,3 @@ tc_add_missing_static_routes:
   - name: ctl-tst-dev-03
     address: 172.21.148.78
     net_id: 172.21.148.78.1.1
-
