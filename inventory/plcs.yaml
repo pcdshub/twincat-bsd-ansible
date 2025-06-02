@@ -20,11 +20,19 @@ kfe_all:
   hosts:
 tmo_all:
   hosts:
+    plc-dream-motion:
     plc-dream-vacuum:
     plc-tmo-motion:
+    plc-tmo-optics:
+    plc-tmo-optics-bsd:
     plc-tmo-vac:
 rix_all:
   hosts:
+    plc-kfe-rix-motion:
+    plc-kfe-rix-vac:
+    plc-qrix-mot:
+    plc-svls-motion:
+    plc-svls-vac:
 txi_all:
   hosts:
 lfe_all:
@@ -34,19 +42,27 @@ xpp_all:
 xcs_all:
   hosts:
     plc-polycap-01:
+    plc-xcs-fpms:
 mfx_all:
   hosts:
 cxi_all:
   hosts:
+    plc-cxi-cvmi:
+    plc-cxi-user:
 mec_all:
   hosts:
+    plc-mec-jj-motion:
 las_all:
   hosts:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
+    plc-cc-motion-test:
+    plc-some-name:
     plc-tst-bsd1:
     plc-tst-bsd2:
+    plc-tst-mkr-01:
+    plc-tst-mkr-02:
 tcbsd_vms:
   hosts:
     test-plc-01:
