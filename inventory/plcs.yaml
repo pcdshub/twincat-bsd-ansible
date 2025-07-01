@@ -42,6 +42,7 @@ xpp_all:
 xcs_all:
   hosts:
     plc-polycap-01:
+    plc-vhs-01:
     plc-xcs-fpms:
 mfx_all:
   hosts:
