@@ -26,6 +26,7 @@ tmo_all:
     plc-tmo-optics:
     plc-tmo-optics-bsd:
     plc-tmo-vac:
+    plc-tst-tmo:
 rix_all:
   hosts:
     plc-kfe-rix-motion:
