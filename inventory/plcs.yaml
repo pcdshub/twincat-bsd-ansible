@@ -22,6 +22,7 @@ tmo_all:
   hosts:
     plc-dream-motion:
     plc-dream-vacuum:
+    plc-tmo-cvmi-motion:
     plc-tmo-motion:
     plc-tmo-optics:
     plc-tmo-optics-bsd:
