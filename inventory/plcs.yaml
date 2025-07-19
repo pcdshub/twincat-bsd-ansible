@@ -48,6 +48,7 @@ xcs_all:
     plc-xcs-fpms:
 mfx_all:
   hosts:
+    plc-mfx-bsm:
 cxi_all:
   hosts:
     plc-cxi-cvmi:
