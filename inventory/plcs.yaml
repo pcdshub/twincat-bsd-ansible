@@ -37,8 +37,11 @@ rix_all:
     plc-svls-vac:
 txi_all:
   hosts:
+    plc-txi-sxr-mot-bsd:
+    plc-txi-sxr-vac-bsd:
 lfe_all:
   hosts:
+    plc-lfe-motion:
 xpp_all:
   hosts:
 xcs_all:
