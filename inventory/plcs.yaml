@@ -38,6 +38,7 @@ rix_all:
 txi_all:
   hosts:
     plc-txi-sxr-mot-bsd:
+    plc-txi-sxr-vac:
     plc-txi-sxr-vac-bsd:
 lfe_all:
   hosts:
