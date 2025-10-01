@@ -20,6 +20,7 @@ kfe_all:
   hosts:
 tmo_all:
   hosts:
+    172.21.132.204:
     plc-dream-motion:
     plc-dream-vacuum:
     plc-tmo-cvmi-motion:
