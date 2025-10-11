@@ -47,6 +47,7 @@ lfe_all:
     plc-lfe-motion:
 xpp_all:
   hosts:
+    plc-xpp-vac:
 xcs_all:
   hosts:
     plc-polycap-01:
