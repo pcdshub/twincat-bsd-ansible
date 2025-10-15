@@ -47,6 +47,8 @@ lfe_all:
     plc-lfe-motion:
 xpp_all:
   hosts:
+    plc-xpp-endstation:
+    plc-xpp-motion:
     plc-xpp-vac:
 xcs_all:
   hosts:
