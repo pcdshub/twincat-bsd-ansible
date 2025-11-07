@@ -20,12 +20,16 @@ kfe_all:
   hosts:
 tmo_all:
   hosts:
+    172.21.132.204:
     plc-dream-motion:
     plc-dream-vacuum:
+    plc-tmo-cvmi-motion:
+    plc-tmo-mbes-vac:
     plc-tmo-motion:
     plc-tmo-optics:
     plc-tmo-optics-bsd:
     plc-tmo-vac:
+    plc-tst-tmo:
 rix_all:
   hosts:
     plc-kfe-rix-motion:
@@ -35,16 +39,26 @@ rix_all:
     plc-svls-vac:
 txi_all:
   hosts:
+    plc-txi-sxr-mot-bsd:
+    plc-txi-sxr-vac:
+    plc-txi-sxr-vac-bsd:
 lfe_all:
   hosts:
+    plc-lfe-motion:
 xpp_all:
   hosts:
+    plc-xpp-endstation:
+    plc-xpp-lodcm:
+    plc-xpp-motion:
+    plc-xpp-vac:
 xcs_all:
   hosts:
     plc-polycap-01:
+    plc-vhs-01:
     plc-xcs-fpms:
 mfx_all:
   hosts:
+    plc-mfx-bsm:
 cxi_all:
   hosts:
     plc-cxi-cvmi:

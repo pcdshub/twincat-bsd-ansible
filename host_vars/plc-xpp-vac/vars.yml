@@ -1,0 +1,132 @@
+---
+ansible_host: plc-xpp-vac
+fixed_xar_version: 4026.3.55
+
+# Uncomment any setting below and change it to override a default setting.
+#ansible_user: Administrator
+#ansible_become: true
+#ansible_become_method: doas
+#ansible_python_interpreter: /usr/local/bin/python3
+#
+## freebsd packages are the standard internet packages for bsd
+#enable_freebsd_packages: false
+## tcbsd packages are the latest packages for tcbsd from Beckhoff
+#enable_tcbsd_packages: false
+## slac packages are a specific version-stamped mirror of tcbsd on the internal network
+## this is required if you want control over your XAR version
+#enable_slac_packages: true
+#
+## fixed XAR ensures you set up the PLC with a known runtime
+## this requires a pkg mirror
+## fixed XAR version should never be defined in a group file, only in a host file, to ensure no surprise updates
+#set_fixed_xar: true
+##fixed_xar_version: 4026.3.55
+#
+## psproxy is needed to get freebsd and tcbsd packages
+#use_psproxy: false
+## an ntp config is needed to get any packages at all, psntp is the internal service at lcls
+#use_psntp: true
+#
+## Dynamic AMS net id = set AMS net id to ip addr .1.1
+## Static AMS net id = set AMS net id to the value of tc_ams_net_id
+#dynamic_ams: true
+## tc_ams_net_id: 0.0.0.0.1.1
+#
+## Extra user for non-admin activities
+#create_user: true
+#create_username: ecs-user
+#
+## set static IP on x000 (mac id 2)
+#x000_set_static_ip: true
+#x000_static_ip: 192.168.1.10
+#
+## set static IP on x001 (mac id 1)
+## Uses the DHCP assigned address, set statically
+#x001_set_static_ip: false
+#
+## We can set the PLC's timezone, which is largely cosmetic
+## See /usr/share/zoneinfo/ on the PLC for options
+#set_plc_timezone: true
+#plc_timezone: America/Los_Angeles
+#
+## This is the default of 32MB. Set to 67108864 for 64MB of router memory.
+#tc_locked_memory_size_bytes: 33554432
+#
+## Heap memory size is not specified by default. If you wish to change the
+## default, set this to greater than 0 (e.g., 1024).  This must be
+## greater than the locked memory size for the router, above.
+#tc_heap_memory_size_mb: 2048
+## Install and use bash in place of sh:
+#tc_use_bash: true
+## Install C/C++ development tools (approximately 1.8GB):
+#tc_install_cpp_dev_tools: true
+#
+## Packages to install:
+#tc_libraries:
+## - TC31-OrderNo                             # Mapping of TwinCAT order numbers to TC/BSD package names
+## - TC31-TcIoPtp                             # TcIoPtp | TC3 Precise Time Protocol
+## - TC31-TcOsSys                             # TwinCAT runtime component TcOsSys.dll and TwinCAT license text
+## - TC31-XAR                                 # TwinCAT System Service
+## - TC31-XAR-EtherCATSlave                   # TwinCAT EtherCATSlave driver
+## - TCBSD-CrossBuildSDK                      # SDK for TC/BSD cross-compilation
+## - TCBSD-Install-Scripts                    # TCBSD installer scripts
+## - TF1810-PLC-HMI-Web                       # TF1810 | TC3 PLC HMI Web
+## - TF2000-HMI-Server                        # TF2000-HMI-Server
+## - TF3300-Scope-Server-IoT                  #
+## - TF3500-Analytics-Logger                  # TF3500 | TC3 Analytics Logger
+## - TF360x-Condition-Monitoring              # TF360x | TC3 Condition Monitoring
+## - TF3650-Power-Monitoring                  # TF3650 | TC3 Power Monitoring
+## - TF3800-Machine-Learning                  # TF3800 | TC3 Machine Learning
+## - TF5000-NC-PTP                            # TwinCAT NC PTP driver
+## - TF5100-NCI                               # TF5100 | TC3 NC I
+## - TF5210-CNC-E                             # TF5210 | TC3 CNC E
+## - TF5850-XTS-Technology                    # TF5850 | XTS Technology
+## - TF6000-ADS-Comm-Lib                      # TF6000 | TC3 ADS Communication Library
+## - TF6100-OPC-UA-beta                       # TF6100 | TC3 OPC UA
+## - TF6230-Parallel-Redundancy-Protocol      # TF6230 | TC3 Parallel Redundancy Protocol
+## - TF6250-Modbus-TCP                        # TF6250 | TC3 Modbus TCP
+## - TF627x-PROFINET-RT                       # TwinCAT PROFINET RT driver
+## - TF6280-EtherNetIP                        # This package was replaces by TF628x-EthernetIP
+## - TF628x-EtherNetIP                        # TwinCAT EtherNet/IP driver
+#- TF6310-TCP-IP                            # TF6310 | TC3 TCP/IP
+## - TF6340-Serial-Communication-beta         # TF6340 | TC3 Serial Communication
+## - TF6420-Database-Server                   # TF6420 | TC3 Database Server
+## - TF6421-XML-Server                        # TF6421 | TC3 XML Server
+## - TF6620-S7-Comm                           # TF6620 | S7 Communication
+## - TF8020-BACnet                            # TwinCAT BACnet driver
+## - TF8310-Wind-Framework                    # TF8310 | TC3 Wind Framework
+#
+#tc_tools_packages:
+#  - TcAdsTool                    # TcAdsTool | Use the power of ADS from your command line
+#  - TcAmsLogger                  # TwinCAT ADS Monitor - AMS Logger
+#  # - TcBackup                   # Tools to easily create and restore full system backups
+#  # - TcBackup-Gui-Installer     # Tools to easily create and restore full system backups
+#  # - TcCoreConf                 # TwinCAT CPU core configuration tool
+#  # - TcCppUtils2.0              #
+#  # - TcEventLoggerAdsProxy      # TcEventLoggerAdsProxy
+#  # - TcImportCert               # TcImportCert | Import TwinCAT OEM certificate data into TwinCAT registry
+#  # - TcPalDrv                   # TwinCAT PAL driver
+#  # - TcTypeSystem2.7            #
+#  # - TcTypeSystem2.8            #
+#  # - TcUsb                      # TwinCAT USB driver
+#
+#tc_packages_to_install:
+#  - git
+#  - vim
+#  - ripgrep
+#
+## Packages only available via pip can be installed using this.
+## py39-pip will only be installed if you marked it here.
+## As far as the security implications go: well, that's up to you!
+#tc_install_pip_packages:
+##   - pytmc
+## Uninstall pip after using it?
+#tc_uninstall_pip: true
+#
+## Configure the following static routes (and only those):
+## NOTE: if you don't want to run my arbitrary module, use this instead
+## of tc_add_missing_static_routes below
+#tc_set_fixed_static_routes: []
+#
+## Alternatively, only add missing routes from the list:
+#tc_add_missing_static_routes: []
