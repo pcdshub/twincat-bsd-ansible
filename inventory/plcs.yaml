@@ -53,6 +53,7 @@ xpp_all:
     plc-xpp-vac:
 xcs_all:
   hosts:
+    plc-hxr-vhs-01:
     plc-polycap-01:
     plc-vhs-01:
     plc-xcs-fpms:
