@@ -45,6 +45,7 @@ txi_all:
 lfe_all:
   hosts:
     plc-lfe-motion:
+    plc-xrt-vac:
 xpp_all:
   hosts:
     plc-xpp-endstation:
