@@ -51,6 +51,7 @@ xpp_all:
     plc-xpp-endstation:
     plc-xpp-lodcm:
     plc-xpp-motion:
+    plc-xpp-tfs:
     plc-xpp-vac:
 xcs_all:
   hosts:
