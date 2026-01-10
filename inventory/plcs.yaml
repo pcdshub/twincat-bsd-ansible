@@ -35,6 +35,7 @@ rix_all:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
     plc-qrix-mot:
+    plc-qrix-xpfs:
     plc-svls-motion:
     plc-svls-vac:
 txi_all:
