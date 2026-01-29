@@ -32,6 +32,7 @@ tmo_all:
     plc-tst-tmo:
 rix_all:
   hosts:
+    plc-crix-vac-temp:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
     plc-qrix-mot:
