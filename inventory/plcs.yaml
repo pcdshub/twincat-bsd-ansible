@@ -86,6 +86,7 @@ tst_all:
     plc-tst-mkr-01:
     plc-tst-mkr-02:
     plc-tst-motion-sync:
+    plc-xpp-granite-mot:
 tcbsd_vms:
   hosts:
     test-plc-01:
