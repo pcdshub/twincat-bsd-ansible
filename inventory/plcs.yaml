@@ -32,11 +32,14 @@ tmo_all:
     plc-tst-tmo:
 rix_all:
   hosts:
+    plc-crix-bsd-motion:
+    plc-crix-motion:
     plc-crix-vac:
     plc-crix-vac-temp:
     plc-crix-vacuum:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
+    plc-mkr-prt:
     plc-qrix-mot:
     plc-qrix-xpfs:
     plc-svls-motion:
