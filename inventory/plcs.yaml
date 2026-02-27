@@ -55,6 +55,7 @@ lfe_all:
     plc-xrt-vac:
 xpp_all:
   hosts:
+    plc-xpp-atds:
     plc-xpp-endstation:
     plc-xpp-lodcm:
     plc-xpp-motion:
@@ -89,6 +90,7 @@ tst_all:
     plc-tst-mkr-01:
     plc-tst-mkr-02:
     plc-tst-motion-sync:
+    plc-ued-um1:
     plc-xpp-granite-mot:
 tcbsd_vms:
   hosts:
