@@ -92,6 +92,7 @@ tst_all:
     plc-tst-motion-sync:
     plc-ued-um1:
     plc-xpp-granite-mot:
+    plc-xpp-pulsepicker-motion:
 tcbsd_vms:
   hosts:
     test-plc-01:
