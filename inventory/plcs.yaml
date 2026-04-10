@@ -23,7 +23,7 @@ tmo_all:
     172.21.132.204:
     plc-dream-motion:
     plc-dream-vacuum:
-    plc-tmo-cvmi-motion:
+    plc-tmo-mbes-motion:
     plc-tmo-mbes-vac:
     plc-tmo-motion:
     plc-tmo-optics:
