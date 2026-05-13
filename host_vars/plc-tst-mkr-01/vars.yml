@@ -23,9 +23,9 @@ fixed_xar_version: 4026.3.55
 ##fixed_xar_version: 4026.3.55
 #
 ## psproxy is needed to get freebsd and tcbsd packages
-#use_psproxy: false
+use_psproxy: true
 ## an ntp config is needed to get any packages at all, psntp is the internal service at lcls
-#use_psntp: true
+use_psntp: true
 #
 ## Dynamic AMS net id = set AMS net id to ip addr .1.1
 ## Static AMS net id = set AMS net id to the value of tc_ams_net_id
@@ -118,8 +118,8 @@ fixed_xar_version: 4026.3.55
 ## Packages only available via pip can be installed using this.
 ## py39-pip will only be installed if you marked it here.
 ## As far as the security implications go: well, that's up to you!
-#tc_install_pip_packages:
-##   - pytmc
+tc_install_pip_packages:
+   - caproto
 ## Uninstall pip after using it?
 #tc_uninstall_pip: true
 #
