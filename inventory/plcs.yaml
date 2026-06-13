@@ -80,6 +80,7 @@ mec_all:
 las_all:
   hosts:
     lcls-plc-fe-tst:
+    plc-las-bts-temp:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
