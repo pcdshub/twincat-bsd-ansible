@@ -1,5 +1,5 @@
 ---
-ansible_host: plc-tst-mkr-01
+ansible_host: plc-xpp-tfs
 fixed_xar_version: 4026.3.55
 
 # Uncomment any setting below and change it to override a default setting.
@@ -23,9 +23,9 @@ fixed_xar_version: 4026.3.55
 ##fixed_xar_version: 4026.3.55
 #
 ## psproxy is needed to get freebsd and tcbsd packages
-use_psproxy: true
+#use_psproxy: false
 ## an ntp config is needed to get any packages at all, psntp is the internal service at lcls
-use_psntp: true
+#use_psntp: true
 #
 ## Dynamic AMS net id = set AMS net id to ip addr .1.1
 ## Static AMS net id = set AMS net id to the value of tc_ams_net_id
@@ -118,8 +118,8 @@ use_psntp: true
 ## Packages only available via pip can be installed using this.
 ## py39-pip will only be installed if you marked it here.
 ## As far as the security implications go: well, that's up to you!
-tc_install_pip_packages:
-   - caproto
+#tc_install_pip_packages:
+##   - pytmc
 ## Uninstall pip after using it?
 #tc_uninstall_pip: true
 #
@@ -129,10 +129,4 @@ tc_install_pip_packages:
 #tc_set_fixed_static_routes: []
 #
 ## Alternatively, only add missing routes from the list:
-tc_add_missing_static_routes:
-  - name: ctl-tst-dev-02
-    address: 172.21.148.24
-    net_id: 172.21.148.24.1.1
-  - name: ctl-tst-dev-03
-    address: 172.21.148.78
-    net_id: 172.21.148.78.1.1
+#tc_add_missing_static_routes: []

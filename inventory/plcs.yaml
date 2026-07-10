@@ -23,7 +23,7 @@ tmo_all:
     172.21.132.204:
     plc-dream-motion:
     plc-dream-vacuum:
-    plc-tmo-cvmi-motion:
+    plc-tmo-mbes-motion:
     plc-tmo-mbes-vac:
     plc-tmo-motion:
     plc-tmo-optics:
@@ -32,9 +32,16 @@ tmo_all:
     plc-tst-tmo:
 rix_all:
   hosts:
+    plc-crix-bsd-motion:
+    plc-crix-motion:
+    plc-crix-vac:
+    plc-crix-vac-temp:
+    plc-crix-vacuum:
     plc-kfe-rix-motion:
     plc-kfe-rix-vac:
+    plc-mkr-prt:
     plc-qrix-mot:
+    plc-qrix-xpfs:
     plc-svls-motion:
     plc-svls-vac:
 txi_all:
@@ -45,14 +52,18 @@ txi_all:
 lfe_all:
   hosts:
     plc-lfe-motion:
+    plc-xrt-vac:
 xpp_all:
   hosts:
+    plc-xpp-atds:
     plc-xpp-endstation:
     plc-xpp-lodcm:
     plc-xpp-motion:
+    plc-xpp-tfs:
     plc-xpp-vac:
 xcs_all:
   hosts:
+    plc-hxr-vhs-01:
     plc-polycap-01:
     plc-vhs-01:
     plc-xcs-fpms:
@@ -68,15 +79,22 @@ mec_all:
     plc-mec-jj-motion:
 las_all:
   hosts:
+    lcls-plc-fe-tst:
+    plc-las-bts-temp:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
     plc-cc-motion-test:
     plc-some-name:
+    plc-tst-bsd-it:
     plc-tst-bsd1:
     plc-tst-bsd2:
     plc-tst-mkr-01:
     plc-tst-mkr-02:
+    plc-tst-motion-sync:
+    plc-ued-um1:
+    plc-xpp-granite-mot:
+    plc-xpp-pulsepicker-motion:
 tcbsd_vms:
   hosts:
     test-plc-01:
