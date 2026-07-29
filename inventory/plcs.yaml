@@ -18,6 +18,7 @@ tcbsd_plcs:
     tst_all:
 kfe_all:
   hosts:
+    plc-kfe-n2:
 tmo_all:
   hosts:
     172.21.132.204:
