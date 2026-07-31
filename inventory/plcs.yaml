@@ -86,6 +86,7 @@ las_all:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
+    lcls-plc-lfe-optics:
     plc-cc-motion-test:
     plc-some-name:
     plc-tst-bsd-it:
