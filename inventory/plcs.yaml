@@ -43,6 +43,7 @@ rix_all:
     plc-mkr-prt:
     plc-qrix-mot:
     plc-qrix-xpfs:
+    plc-rix-xpfs:
     plc-svls-motion:
     plc-svls-vac:
 txi_all:
