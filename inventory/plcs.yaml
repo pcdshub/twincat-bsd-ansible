@@ -43,6 +43,7 @@ rix_all:
     plc-mkr-prt:
     plc-qrix-mot:
     plc-qrix-xpfs:
+    plc-rix-um1:
     plc-rix-xpfs:
     plc-rixs-optics:
     plc-svls-motion:
