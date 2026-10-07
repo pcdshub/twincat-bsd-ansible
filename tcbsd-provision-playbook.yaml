@@ -437,3 +437,66 @@
       when: sshd_configure.changed
       ansible.builtin.wait_for_connection:
         delay: 2
+
+    # Note: this requires scripts/clone_plcsnapshot.sh to have already been run
+    - name: Install PLC Snapshot Tools
+      when: install_plcsnapshots
+      block:
+        - name: Copy Default plcsnapshot.conf
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot.conf"
+            dest: /usr/local/etc/plcsnapshot.conf
+            owner: Administrator
+        - name: Install plcsnapshot executable
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot"
+            dest: /usr/local/sbin/plcsnapshot
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Install plcsnapshotd daemon
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshotd"
+            dest: /usr/local/etc/rc.d/plcsnapshotd
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Add plcsnapshot sysrc
+          community.general.sysrc:
+            name: plcsnapshotd_enable
+            value: YES
+        - name: Start plcsnapshotd service
+          ansible.builtin.service:
+            name: plcsnapshotd
+            enabled: true
+            state: started
+
+    - name: Uninstall PLC Snapshot Tools
+      when: not install_plcsnapshots
+      block:
+        - name: Check for plcsnapshotd service file
+          register: plcsnapshotd_status
+          ansible.builtin.stat:
+            path: /usr/local/etc/rc.d/plcsnapshotd
+        - name: Stop plcsnapshot service
+          when: plcsnapshotd_status.stat.exists
+          ansible.builtin.service:
+            name: plcsnapshotd
+            enabled: false
+            state: stopped
+        - name: Remove plcsnapshot sysrc
+          community.general.sysrc:
+            name: plcsnapshotd_enable
+            state: absent
+        - name: Uninstall plcsnapshotd daemon
+          ansible.builtin.file:
+            path: /usr/local/etc/rc.d/plcsnapshotd
+            state: absent
+        - name: Uninstall plcsnapshot executable
+          ansible.builtin.file:
+            path: /usr/local/sbin/plcsnapshot
+            state: absent
+        - name: Delete plcsnapshot.conf
+          ansible.builtin.file:
+            path: /usr/local/etc/plcsnapshot.conf
+            state: absent
