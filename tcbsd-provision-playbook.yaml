@@ -4,12 +4,16 @@
   tasks:
     - name: Verify connectivity with ping
       ansible.builtin.ping:
+      tags:
+        - always
 
     - name: Run PLC mode command
       register: plc_mode
       changed_when: false
       ansible.builtin.command:
         cmd: TcSysExe.exe --mode
+      tags:
+        - always
 
     - name: Assert that PLC is in CONFIG mode
       when: not ansible_check_mode
@@ -17,6 +21,8 @@
         that: "{{ 'CONFIG' in plc_mode.stdout }}"
         fail_msg: "PLC is in RUN mode! Abort!"
         quiet: true
+      tags:
+        - always
 
     - name: Enable FreeBSD packages
       when: enable_freebsd_packages
@@ -25,6 +31,8 @@
         # We remove it in order to enable access to upstream packages.
         path: /usr/local/etc/pkg/repos/FreeBSD.conf
         state: absent
+      tags:
+        - package_config
 
     - name: Disable FreeBSD packages
       when: not enable_freebsd_packages
@@ -35,12 +43,16 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+      tags:
+        - package_config
 
     - name: Enable TcBSD packages
       when: enable_tcbsd_packages
       ansible.builtin.file:
         path: /usr/local/etc/pkg/repos/FreeBSD.conf
         state: absent
+      tags:
+        - package_config
 
     - name: Disable TcBSD packages
       when: not enable_tcbsd_packages
@@ -51,6 +63,8 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+      tags:
+        - package_config
 
     - name: Configure SLAC package mirror repo
       when: enable_slac_packages
@@ -61,12 +75,16 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+      tags:
+        - package_config
 
     - name: Enable SLAC package mirror
       when: enable_slac_packages
       ansible.builtin.file:
         path: /usr/local/etc/pkg/repos/SLAC.conf
         state: absent
+      tags:
+        - package_config
 
     - name: Disable SLAC package mirror
       when: not enable_slac_packages
@@ -77,6 +95,8 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+      tags:
+        - package_config
 
     - name: Setup psproxy
       ansible.builtin.blockinfile:
@@ -89,6 +109,8 @@
               http_proxy: "http://psproxy:3128",
               https_proxy: "http://psproxy:3128",
           }
+      tags:
+        - package_config
 
     # We need NTP sync in order to install packages.
     # Use internal ntp servers
@@ -108,6 +130,8 @@
           server psntp1.pcdsn iburst
           server psntp2.pcdsn iburst
           server psntp3.pcdsn iburst
+      tags:
+        - date_and_time
 
     - name: Set timezone
       when: set_plc_timezone
@@ -116,6 +140,8 @@
         remote_src: true
         src: "/usr/share/zoneinfo/{{ plc_timezone }}"
         dest: /etc/localtime
+      tags:
+        - date_and_time
 
     # ntpd does not necessarily re-sync promptly after start or reconfig
     # stop the service, sync manually, then start it again
@@ -126,11 +152,15 @@
         name: ntpd
         enabled: yes
         state: stopped
+      tags:
+        - date_and_time
 
     - name: Force NTP Sync Now
       when: psntp_setup.changed
       ansible.builtin.command: ntpd -g -q
       changed_when: true
+      tags:
+        - date_and_time
 
     - name: (Re) Start NTP Service
       when: psntp_setup.changed
@@ -138,6 +168,8 @@
         name: ntpd
         enabled: yes
         state: started
+      tags:
+        - date_and_time
 
     - name: Install helpful system packages
       ansible.builtin.package:
@@ -155,6 +187,8 @@
           - py39-lxml
           - rsync
         state: latest
+      tags:
+        - package_installs
 
     - name: Install pip
       # Packages only available via pip will be installed after this
@@ -164,11 +198,15 @@
         name:
           - py39-pip
         state: latest
+      tags:
+        - package_installs
 
     - name: Install pip dependencies if required
       when: tc_install_pip_packages
       ansible.builtin.pip:
         name: "{{ tc_install_pip_packages }}"
+      tags:
+        - package_installs
 
     - name: Uninstall pip
       # Packages only available via pip will be installed before this
@@ -178,11 +216,15 @@
         name:
           - py39-pip
         state: absent
+      tags:
+        - package_installs
 
     - name: Install user-specified system packages
       ansible.builtin.package:
         name: "{{ tc_packages_to_install }}"
         state: latest
+      tags:
+        - package_installs
 
     # Note: this job runs even in check mode, to help us figure out if the xar install will happen.
     - name: "Get available TwinCAT build"
@@ -193,6 +235,8 @@
       ansible.builtin.shell:
         executable: /usr/local/bin/bash
         cmd: pkg search TC31-XAR-{{ fixed_xar_version }} | cut -f 1 -d " " | cut -f 2 -d "_"
+      tags:
+        - package_installs
 
     - name: "Set fixed TwinCAT Runtime version ({{ fixed_xar_version | default('N/A') }})"
       when: set_fixed_xar
@@ -200,11 +244,15 @@
       ansible.builtin.package:
         name: "TC31-XAR-{{ fixed_xar_version }}_{{ pkg_twincat_build.stdout }}"
         state: present
+      tags:
+        - package_installs
 
     - name: Install TwinCAT tools
       ansible.builtin.package:
         name: "{{ tc_tools_packages }}"
         state: latest
+      tags:
+        - package_installs
 
     - name: Install C/C++ development tools
       ansible.builtin.package:
@@ -214,11 +262,15 @@
           - gdb
         state: latest
       when: tc_install_cpp_dev_tools
+      tags:
+        - package_installs
 
     - name: Install user TwinCAT Libraries
       ansible.builtin.package:
         name: "{{ tc_libraries }}"
         state: latest
+      tags:
+        - package_installs
 
     - name: Set the AMS Net ID
       community.general.xml:
@@ -231,6 +283,8 @@
           {%- endif -%}
           {{ ip_macros.ams_net_id_to_binary(tc_ams_net_id) }}
       register: ams_net_id
+      tags:
+        - twincat_settings
 
     - name: Adjust the locked memory size
       community.general.xml:
@@ -238,6 +292,8 @@
         xpath: /TcRegistry/Key[@Name='HKLM']/Key[@Name='Software']/Key[@Name='Beckhoff']/Key[@Name='TwinCAT3']/Key[@Name='System']/Value[@Name='LockedMemSize']
         value: "{{ tc_locked_memory_size_bytes | string }}"
       register: locked_memory_size
+      tags:
+        - twincat_settings
 
     - name: Set the heap memory size
       community.general.xml:
@@ -246,6 +302,8 @@
         value: "{{ tc_heap_memory_size_mb | string }}"
       when: tc_heap_memory_size_mb > 0
       register: heap_memory_size
+      tags:
+        - twincat_settings
 
       # TODO: can this be combined in the step above?
     # Sets Type="DW" in <Value Name="HeapMemSizeMB" Type="DW">
@@ -256,6 +314,8 @@
         attribute: Type
         value: DW
       when: tc_heap_memory_size_mb > 0
+      tags:
+        - twincat_settings
 
     - name: Set the startup hostname
       ansible.builtin.lineinfile:
@@ -265,15 +325,21 @@
         owner: root
         group: wheel
         mode: u=rw,g=r,o=r
+      tags:
+        - bsd_settings
 
     - name: Set the live hostname
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
+      tags:
+        - bsd_settings
 
     - name: Change default shell for Administrator
       ansible.builtin.command: chsh -s /usr/local/bin/bash Administrator
       when: tc_use_bash
       changed_when: false
+      tags:
+        - bsd_settings
 
     - name: "Include our bash configuration files"
       ansible.builtin.template:
@@ -285,6 +351,8 @@
       loop:
         - home/Administrator/.bashrc
         - home/Administrator/.bash_profile
+      tags:
+        - bsd_settings
 
     - name: Include our firewall configuration
       ansible.builtin.template:
@@ -293,6 +361,8 @@
         owner: root
         mode: u=rw,g=r,o=r
       register: siteconf
+      tags:
+        - bsd_settings
 
     - name: Include our firewall configuration in /etc/pf.conf
       ansible.builtin.blockinfile:
@@ -301,6 +371,8 @@
           anchor siteconf
           load anchor siteconf from "/etc/pf.conf.d/siteconf"
       register: pf
+      tags:
+        - bsd_settings
 
     - name: Reload packet filter (pf)
       ansible.builtin.service:
@@ -308,6 +380,8 @@
         enabled: yes
         state: reloaded
       when: siteconf.changed or pf.changed
+      tags:
+        - bsd_settings
 
     - name: Configure a set of fixed static routes with a template
       ansible.builtin.template:
@@ -340,6 +414,9 @@
         enabled: yes
         state: restarted
       when: ams_net_id.changed or locked_memory_size.changed or heap_memory_size.changed or xar_install.changed
+      tags:
+        - package_installs
+        - twincat_settings
 
     # We use the second port as a LAN port with a known static IP
     # This makes it easy to use if we need it for e.g. doing service
@@ -349,6 +426,8 @@
       community.general.sysrc:
         name: ifconfig_igb1
         value: "inet {{ x000_static_ip }} netmask 255.255.255.0"
+      tags:
+        - network_settings
 
     - name: Set DHCP on X000
       when: not x000_set_static_ip
@@ -356,11 +435,15 @@
       community.general.sysrc:
         name: ifconfig_igb1
         state: absent
+      tags:
+        - network_settings
 
     - name: Reset X000
       when: static_ip_x000_set.changed or dhcp_x000_set.changed
       ansible.builtin.command: /etc/rc.d/netif restart igb1
       changed_when: true
+      tags:
+        - network_settings
 
     # We use the first port as a the main CDS port with a DNS-defined IP
     # Currently we use DHCP, but we could instead set a static IP using this
@@ -370,6 +453,8 @@
       ansible.builtin.shell:
         executable: /usr/local/bin/bash
         cmd: ifconfig igb0 inet | grep inet | cut -f 2 | cut -f 1-4 -d " "
+      tags:
+        - network_settings
 
     - name: Set static IP on X001
       when: x001_set_static_ip
@@ -377,6 +462,8 @@
       community.general.sysrc:
         name: ifconfig_igb0
         value: "{{ x001_ip_details.stdout }}"
+      tags:
+        - network_settings
 
     - name: Set DHCP on X001
       when: not x001_set_static_ip
@@ -384,6 +471,8 @@
       community.general.sysrc:
         name: ifconfig_igb0
         state: absent
+      tags:
+        - network_settings
 
     # Note: we have to reset X001 asynchronously
     # Otherwise, we just drop our connection and hang
@@ -395,6 +484,8 @@
         cmd: "sleep 1; /etc/rc.d/netif restart igb0 &"
       async: "{{ ansible_check_mode | ternary(0, 100) }}"
       poll: 0
+      tags:
+        - network_settings
 
     - name: Reset X001 (async, dhcp)
       when: dhcp_x001_set.changed
@@ -403,11 +494,15 @@
         cmd: "sleep 1; dhclient igb0 &"
       async: "{{ ansible_check_mode | ternary(0, 100) }}"
       poll: 0
+      tags:
+        - network_settings
 
     - name: Wait for X001 network to resume
       when: static_ip_x001_set.changed or dhcp_x001_set.changed
       ansible.builtin.wait_for_connection:
         delay: 2
+      tags:
+        - network_settings
 
     # Useful for apps that need PLC access but not Admin-level config change access
     # We need to manually set the password ourselves later via "doas passwd username"
@@ -416,6 +511,8 @@
         name: "{{ create_username }}"
         state: "{{ create_user | ternary('present', 'absent') }}"
         shell: /usr/local/bin/bash
+      tags:
+        - account_settings
 
     # By default, only pubkey and keyboard interactive are enabled
     # Password access is useful for apps like pmpsdb_client
@@ -425,6 +522,8 @@
         path: /etc/ssh/sshd_config
         line: "PasswordAuthentication yes"
         insertafter: "^#PasswordAuthentication"
+      tags:
+        - account_settings
 
     - name: Reload sshd
       when: sshd_configure.changed
@@ -432,8 +531,78 @@
         name: sshd
         enabled: yes
         state: reloaded
+      tags:
+        - account_settings
 
     - name: Verify ssh still works
       when: sshd_configure.changed
       ansible.builtin.wait_for_connection:
         delay: 2
+      tags:
+        - account_settings
+
+    - name: Install PLC Snapshot Tools
+      when: install_plcsnapshots
+      block:
+        - name: Copy Default plcsnapshot.conf
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot.conf"
+            dest: /usr/local/etc/plcsnapshot.conf
+            owner: Administrator
+        - name: Install plcsnapshot executable
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot"
+            dest: /usr/local/sbin/plcsnapshot
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Install plcsnapshotd daemon
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshotd"
+            dest: /usr/local/etc/rc.d/plcsnapshotd
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Add plcsnapshot sysrc
+          community.general.sysrc:
+            name: plcsnapshotd_enable
+            value: YES
+        - name: Start plcsnapshotd service
+          ansible.builtin.service:
+            name: plcsnapshotd
+            enabled: true
+            state: started
+      tags:
+        - plcsnapshots
+
+    - name: Uninstall PLC Snapshot Tools
+      when: not install_plcsnapshots
+      block:
+        - name: Check for plcsnapshotd service file
+          register: plcsnapshotd_status
+          ansible.builtin.stat:
+            path: /usr/local/etc/rc.d/plcsnapshotd
+        - name: Stop plcsnapshot service
+          when: plcsnapshotd_status.stat.exists
+          ansible.builtin.service:
+            name: plcsnapshotd
+            enabled: false
+            state: stopped
+        - name: Remove plcsnapshot sysrc
+          community.general.sysrc:
+            name: plcsnapshotd_enable
+            state: absent
+        - name: Uninstall plcsnapshotd daemon
+          ansible.builtin.file:
+            path: /usr/local/etc/rc.d/plcsnapshotd
+            state: absent
+        - name: Uninstall plcsnapshot executable
+          ansible.builtin.file:
+            path: /usr/local/sbin/plcsnapshot
+            state: absent
+        - name: Delete plcsnapshot.conf
+          ansible.builtin.file:
+            path: /usr/local/etc/plcsnapshot.conf
+            state: absent
+      tags:
+        - plcsnapshots
