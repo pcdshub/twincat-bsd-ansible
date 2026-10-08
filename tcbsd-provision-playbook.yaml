@@ -542,13 +542,15 @@
         - account_settings
 
     - name: Install PLC Snapshot Tools
-      when: install_plcsnapshots
+      when: install_plcsnapshotd
       block:
         - name: Copy Default plcsnapshot.conf
           ansible.builtin.copy:
             src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot.conf"
             dest: /usr/local/etc/plcsnapshot.conf
             owner: Administrator
+            # If it's already there, don't change the plc's settings
+            force: false
         - name: Install plcsnapshot executable
           ansible.builtin.copy:
             src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/plcsnapshot"
@@ -568,6 +570,7 @@
             name: plcsnapshotd_enable
             value: YES
         - name: Start plcsnapshotd service
+          when: not ansible_check_mode
           ansible.builtin.service:
             name: plcsnapshotd
             enabled: true
@@ -576,7 +579,7 @@
         - plcsnapshots
 
     - name: Uninstall PLC Snapshot Tools
-      when: not install_plcsnapshots
+      when: not install_plcsnapshotd
       block:
         - name: Check for plcsnapshotd service file
           register: plcsnapshotd_status
@@ -600,9 +603,81 @@
           ansible.builtin.file:
             path: /usr/local/sbin/plcsnapshot
             state: absent
-        - name: Delete plcsnapshot.conf
+        # Intentionally keep plcsnapshot.conf, persist settings
+      tags:
+        - plcsnapshots
+
+    - name: Install NC Snapshot Tools
+      when: install_ncsnapshotd
+      block:
+        - name: Create NcSnapshots directory
           ansible.builtin.file:
-            path: /usr/local/etc/plcsnapshot.conf
+            path: /usr/local/etc/TwinCAT/NcSnapshots
+            state: directory
+        - name: Install nc_parameters.tsv
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/nc_parameters.tsv"
+            dest: /usr/local/etc/TwinCAT/NcSnapshots/nc_parameters.tsv
+        - name: Copy Default ncsnapshot.conf
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/ncsnapshot.conf"
+            dest: /usr/local/etc/ncsnapshot.conf
+            owner: Administrator
+            # If it's already there, don't change the plc's settings
+            force: false
+        - name: Install ncsnapshot executable
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/ncsnapshot"
+            dest: /usr/local/sbin/ncsnapshot
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Install ncsnapshotd daemon
+          ansible.builtin.copy:
+            src: ".cache/plcsnapshots/{{ plcsnapshots_version }}/ncsnapshotd"
+            dest: /usr/local/etc/rc.d/ncsnapshotd
+            owner: root
+            group: wheel
+            mode: 0555
+        - name: Add ncsnapshot sysrc
+          community.general.sysrc:
+            name: ncsnapshotd_enable
+            value: YES
+        - name: Start ncsnapshotd service
+          when: not ansible_check_mode
+          ansible.builtin.service:
+            name: ncsnapshotd
+            enabled: true
+            state: started
+      tags:
+        - plcsnapshots
+
+    - name: Uninstall NC Snapshot Tools
+      when: not install_ncsnapshotd
+      block:
+        - name: Check for ncsnapshotd service file
+          register: ncsnapshotd_status
+          ansible.builtin.stat:
+            path: /usr/local/etc/rc.d/ncsnapshotd
+        - name: Stop ncsnapshot service
+          when: ncsnapshotd_status.stat.exists
+          ansible.builtin.service:
+            name: ncsnapshotd
+            enabled: false
+            state: stopped
+        - name: Remove ncsnapshot sysrc
+          community.general.sysrc:
+            name: ncsnapshotd_enable
             state: absent
+        - name: Uninstall ncsnapshotd daemon
+          ansible.builtin.file:
+            path: /usr/local/etc/rc.d/ncsnapshotd
+            state: absent
+        - name: Uninstall ncsnapshot executable
+          ansible.builtin.file:
+            path: /usr/local/sbin/ncsnapshot
+            state: absent
+        # Intentionally keep ncsnapshot.conf, persist settings
+        # Intentionally keep the NcSnapshots directory, persist backups
       tags:
         - plcsnapshots
