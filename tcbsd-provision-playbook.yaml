@@ -541,7 +541,6 @@
       tags:
         - account_settings
 
-    # Note: this requires scripts/clone_plcsnapshot.sh to have already been run
     - name: Install PLC Snapshot Tools
       when: install_plcsnapshots
       block:
