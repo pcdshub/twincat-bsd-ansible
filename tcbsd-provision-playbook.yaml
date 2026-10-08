@@ -570,6 +570,7 @@
             name: plcsnapshotd_enable
             value: YES
         - name: Start plcsnapshotd service
+          when: not ansible_check_mode
           ansible.builtin.service:
             name: plcsnapshotd
             enabled: true
@@ -643,6 +644,7 @@
             name: ncsnapshotd_enable
             value: YES
         - name: Start ncsnapshotd service
+          when: not ansible_check_mode
           ansible.builtin.service:
             name: ncsnapshotd
             enabled: true
