@@ -35,7 +35,7 @@ trap ssh_agent_helper_cleanup ERR
 # Create an ssh key, if it does not already exist
 if [ ! -f "${SSH_KEY_FILENAME}" ]; then
   echo "Generating your PLC Ansible SSH Key at ${SSH_KEY_FILENAME}."
-  echo "Please encrypt this with the TCBSD Admin password!."
+  echo "Please encrypt this with a strong, memorable password!"
   ssh-keygen -t rsa -f "${SSH_KEY_FILENAME}"
 fi
 
@@ -55,5 +55,6 @@ else
     HELPER_STARTED_AGENT="YES"
 fi
 # If we got this far, run ssh-add
-echo "Running ssh-add, will prompt for PLC admin password:"
+echo "Running ssh-add, will prompt for your ${SSH_KEY_FILENAME} password."
 ssh-add "${SSH_KEY_FILENAME}"
+echo "Next prompt should be for the BECOME password, this is the PLC admin password:"
