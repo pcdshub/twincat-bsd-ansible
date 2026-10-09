@@ -18,6 +18,7 @@ tcbsd_plcs:
     tst_all:
 kfe_all:
   hosts:
+    plc-kfe-n2:
 tmo_all:
   hosts:
     172.21.132.204:
@@ -42,6 +43,9 @@ rix_all:
     plc-mkr-prt:
     plc-qrix-mot:
     plc-qrix-xpfs:
+    plc-rix-um1:
+    plc-rix-xpfs:
+    plc-rixs-optics:
     plc-svls-motion:
     plc-svls-vac:
 txi_all:
@@ -80,10 +84,12 @@ mec_all:
 las_all:
   hosts:
     lcls-plc-fe-tst:
+    plc-las-bts:
     plc-las-bts-temp:
     plc-las-opcpa-eps-02:
 tst_all:
   hosts:
+    lcls-plc-lfe-optics:
     plc-cc-motion-test:
     plc-some-name:
     plc-tst-bsd-it:
