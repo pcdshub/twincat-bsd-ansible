@@ -1,6 +1,6 @@
 ## twincat-bsd-ansible
 
-A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
+A repository for Ansible provisioning of TwinCAT BSD PLCs.
 
 
 ### Quick start: set up a new plc in prod
@@ -8,9 +8,27 @@ A repository for trying out Ansible provisioning of TwinCAT BSD PLCs.
 2. Edit ``./inventory/plcs.yaml`` to add your plc (and possibly an appropriate group)
 3. run ``./scripts/first_time_setup.sh your-plc-name``
 4. Optionally edit ``./host_vars/your-plc-name/vars.yaml`` if you'd like to change settings
-3. run ``./scripts/provision_plcs.sh your-plc-name``
-4. commit and submit the file edits as a PR
+5. run ``./scripts/provision_plcs.sh your-plc-name``
 
+### Running only a subset of the steps
+The playbook is long.
+Each of the steps in the ansible playbook is assigned a "tag" so we can run only the parts we care about,
+without waiting for all of the other steps to run.
+
+> Note that basic connectivity checks and the config mode check will always be run.
+
+Example: ``./scripts/provision_plcs.sh your-plc-name --tags plcsnapshots``
+
+Here are a list of supported tags and generally what they affect:
+- package_config: configuration of which package servers are used
+- date_and_time: ntp, timezones, etc.
+- package_installs: all installs from the package repositories
+- twincat_settings: AMS net id, memory settings, etc.
+- bsd_settings: hostname, firewall, .bashrc, etc.
+- routes: static routes
+- network_settings: static IP, DHCP, etc.
+- account_settings: users, ssh access, etc.
+- plcsnapshots: backup and restore tools from the plcsnapshots repo
 
 ### Install requirements
 

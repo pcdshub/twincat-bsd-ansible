@@ -126,3 +126,8 @@ tc_set_fixed_static_routes: []
 
 # Alternatively, only add missing routes from the list:
 tc_add_missing_static_routes: []
+
+# Use the backup/restore tools from plcsnapshots repo
+install_plcsnapshotd: true
+install_ncsnapshotd: true
+plcsnapshots_version: R1.1.0

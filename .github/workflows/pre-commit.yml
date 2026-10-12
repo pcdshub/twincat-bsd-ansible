@@ -10,6 +10,6 @@ on:
 jobs:
   pre-commit:
     name: "pre-commit checks"
-    uses: pcdshub/pcds-ci-helpers/.github/workflows/pre-commit.yml@master
+    uses: pcdshub/pcds-ci-helpers/.github/workflows/pre-commit.yml@52a413e9d77c09f9e7617c3a75fc19a7d6cf4e11
     with:
       args: "--all-files"

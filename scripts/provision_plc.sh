@@ -24,6 +24,9 @@ THIS_SCRIPT="$(realpath "${0}")"
 THIS_DIR="$(dirname "${THIS_SCRIPT}")"
 source "${THIS_DIR}"/paths.sh
 
+# Clone tools from pcdshub if not cloned already
+"${THIS_DIR}"/clone_repos.sh
+
 # Use the correct python env
 source "${THIS_DIR}"/activate_python.sh
 
