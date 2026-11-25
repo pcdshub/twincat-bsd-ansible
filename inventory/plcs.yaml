@@ -95,9 +95,11 @@ tst_all:
     plc-tst-bsd-it:
     plc-tst-bsd1:
     plc-tst-bsd2:
+    plc-tst-kfe-motion:
     plc-tst-mkr-01:
     plc-tst-mkr-02:
     plc-tst-motion-sync:
+    plc-tst-sxr-motion:
     plc-ued-um1:
     plc-xpp-granite-mot:
     plc-xpp-pulsepicker-motion:
